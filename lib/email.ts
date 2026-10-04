@@ -8,15 +8,15 @@ import { unsubscribeUrl } from "./unsubscribe";
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-// Email colours match the site: navy print on game-board mint, with a red pawn accent.
-const INK = "#1c2b44";
-const MUTED = "#5b6577";
-const LINE = "#d4dccf";
-const RED = "#d23a2a";
+// Email colours echo Arcade pop: deep violet print and hot pink, kept light so every mail app shows them well.
+const INK = "#1b1a3a";
+const MUTED = "#5e5a7d";
+const LINE = "#ddd8ee";
+const RED = "#d93a6a";
 const FONT = "Helvetica,Arial,sans-serif";
 
 function layout(heading: string, body: string, footer = "") {
-  return `<!doctype html><html><body style="margin:0;background:#dbe8d5;padding:32px 12px;font-family:${FONT};color:${INK}">
+  return `<!doctype html><html><body style="margin:0;background:#efeafd;padding:32px 12px;font-family:${FONT};color:${INK}">
   <table role="presentation" width="100%" style="max-width:560px;margin:0 auto;background:#fffdf7;border-radius:10px;border:2px solid ${INK}">
     <tr><td style="padding:30px 26px">
       <p style="margin:0 0 22px;font-size:19px;font-weight:800"><a href="${site.url}" style="color:${INK};text-decoration:none">${esc(site.name)}</a></p>
@@ -71,7 +71,7 @@ function upsell(items: Product[], heading: string, campaign: string) {
     .map(
       (p) => `<td width="${Math.floor(100 / items.length)}%" valign="top" style="padding:0 6px">
         <a href="${tracked(`/shop/${p.slug}`, campaign)}" style="color:${INK};text-decoration:none">
-          <img src="${thumb(p.images[0])}" alt="${esc(p.title)}" width="160" style="display:block;width:100%;max-width:160px;height:auto;background:#e6efe1;border:0;border-radius:6px">
+          <img src="${thumb(p.images[0])}" alt="${esc(p.title)}" width="160" style="display:block;width:100%;max-width:160px;height:auto;background:#e5e0f7;border:0;border-radius:6px">
           <span style="display:block;margin-top:8px;font-weight:700;font-size:14px;line-height:1.3">${esc(p.title)}</span>
           <span style="display:block;font-size:13px;color:${MUTED}">${formatNzd(p.price_cents)}${
             p.completeness === "complete" ? ", counted complete" : ""
@@ -136,7 +136,7 @@ export async function sendOrderEmails(o: Order) {
     html: layout(
       isPickup(o) ? "Sold: arrange a pick-up" : "You made a sale",
       `<p><strong>${esc(o.product_title)}</strong> has sold and is now marked Sold on the site.</p>
-       ${isPickup(o) ? `<p style="padding:10px 12px;background:#fdf1d6;border-radius:6px">The buyer is picking up in ${esc(site.pickup.town)}. Get in touch to arrange a time.</p>` : ""}
+       ${isPickup(o) ? `<p style="padding:10px 12px;background:#dff8f2;border-radius:6px">The buyer is picking up in ${esc(site.pickup.town)}. Get in touch to arrange a time.</p>` : ""}
        <p><strong>Buyer</strong><br>${esc(o.customer_name)}<br>${esc(o.customer_email)}${o.customer_phone ? `<br>${esc(o.customer_phone)}` : ""}</p>
        ${summary(o)}
        <p style="margin-top:24px"><a href="${site.url}/admin/orders" style="color:${INK}">Open orders in admin</a> to ${
@@ -205,7 +205,7 @@ export async function sendSampleEmail(to: string) {
     subject: "Sample: what buyers receive after paying",
     html: layout(
       "Thanks, it's your turn",
-      `<p style="padding:10px 12px;background:#fdf1d6;border-radius:6px">This is a sample of the confirmation buyers get. The real one includes their order and address.</p>
+      `<p style="padding:10px 12px;background:#dff8f2;border-radius:6px">This is a sample of the confirmation buyers get. The real one includes their order and address.</p>
        <p>Hi there,</p>
        <p>Your payment has gone through and <strong>${esc(game?.title ?? "your game")}</strong>${condition ? ` (${esc(condition.toLowerCase())})` : ""} is yours. ${esc(site.dispatchNote)}</p>
        ${upsell(more, "You might also like", "sample")}`

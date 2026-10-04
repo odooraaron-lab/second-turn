@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Gallery } from "./Gallery";
 import { JsonLd } from "@/components/JsonLd";
 import { StatusPrice, CompleteLine, productAlt, ProductCard } from "@/components/ProductCard";
+import { CollectorCard } from "@/components/CollectorCard";
+import { rarityOf } from "@/lib/collector";
 import { getPublicProduct, listPublicProducts, publicStatus } from "@/lib/products";
 import { formatNzd } from "@/lib/format";
 import { offerShipping, returnPolicy } from "@/lib/schema";
@@ -202,6 +204,13 @@ export default async function ProductPage({ params, searchParams }: Props) {
           </div>
 
           {p.description && <div className="product-desc">{p.description}</div>}
+
+          <section className="product-card-aside" aria-labelledby="its-card">
+            <h2 id="its-card" className="details-head">
+              Collector card: {rarityOf(p)}
+            </h2>
+            <CollectorCard product={p} />
+          </section>
 
           <h2 className="details-head">Details</h2>
           <dl className="details">

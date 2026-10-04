@@ -7,8 +7,8 @@ const page = (title: string, body: string, status = 200) =>
   new Response(
     `<!doctype html><html lang="en-NZ"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>${title} | ${site.name}</title></head>
-<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#dbe8d5;font-family:Helvetica,Arial,sans-serif;color:#1c2b44;padding:24px">
-<main style="max-width:380px;background:#fffdf7;padding:28px 24px;border-radius:10px;box-shadow:0 2px 0 #1c2b44">
+<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#1b1a3a;font-family:Helvetica,Arial,sans-serif;color:#fff4e2;padding:24px">
+<main style="max-width:380px;background:#2a2857;padding:28px 24px;border-radius:10px;box-shadow:0 3px 0 #0c0b22">
 <p style="margin:0 0 6px;font:600 15px Helvetica,Arial,sans-serif">${site.name}</p>
 <h1 style="margin:0 0 12px;font-weight:800;font-size:24px">${title}</h1>
 ${body}</main></body></html>`,
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   return page(
     "Unsubscribe?",
     `<p style="font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6">Stop emails about new games to ${email}? Order and delivery emails still arrive.</p>
-     <form method="post"><button style="margin-top:8px;width:100%;height:48px;border:0;border-radius:3px;background:#d23a2a;color:#fff;font:500 16px Helvetica,Arial,sans-serif;cursor:pointer">Unsubscribe</button></form>`
+     <form method="post"><button style="margin-top:8px;width:100%;height:48px;border:0;border-radius:3px;background:#ff5e8a;color:#14132e;font:500 16px Helvetica,Arial,sans-serif;cursor:pointer">Unsubscribe</button></form>`
   );
 }
 

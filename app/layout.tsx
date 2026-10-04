@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { site } from "@/site.config";
 import { shareImage } from "@/lib/seo";
 import "./globals.css";
+import "./collector-card.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#dbe8d5",
+  themeColor: "#1b1a3a",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

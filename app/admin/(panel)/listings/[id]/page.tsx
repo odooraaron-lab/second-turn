@@ -5,6 +5,8 @@ import { getProductById, publicStatus } from "@/lib/products";
 import { ListingForm } from "../../ListingForm";
 import { setSold, setVisible, deleteListing } from "../../../actions";
 import { ConfirmButton } from "../../ConfirmButton";
+import { CollectorCard } from "@/components/CollectorCard";
+import { rarityOf } from "@/lib/collector";
 
 export const metadata = { title: "Edit game" };
 
@@ -62,6 +64,17 @@ export default async function EditListing({ params }: Props) {
             </button>
           </form>
         </div>
+      </section>
+
+      <section className="admin-card-preview" aria-labelledby="card-preview">
+        <div>
+          <h2 id="card-preview">Its collector card</h2>
+          <p className="hint">
+            Made automatically from the listing. Rarity is {rarityOf(product)}: counted complete, better condition and
+            older games score higher. Save changes to update it.
+          </p>
+        </div>
+        <CollectorCard product={product} />
       </section>
 
       <ListingForm product={product} />

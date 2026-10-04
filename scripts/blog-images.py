@@ -20,25 +20,25 @@ OUT = os.path.join(ROOT, "public", "blog")
 W, H = 1200, 675
 S = 2  # drawn at twice the size, then scaled down for smooth edges
 
-INK = (28, 43, 68)
-RED = (210, 58, 42)
-YELLOW = (242, 182, 50)
-BLUE = (47, 109, 181)
-GREEN = (46, 125, 79)
-MINT = (219, 232, 213)
-CARD = (255, 253, 247)
-PINK = (246, 201, 191)
-SKY = (199, 220, 242)
+INK = (12, 11, 34)
+RED = (255, 94, 138)
+YELLOW = (255, 210, 63)
+BLUE = (142, 162, 255)
+GREEN = (63, 224, 197)
+MINT = (157, 242, 155)
+CARD = (255, 244, 226)
+PINK = (255, 179, 200)
+SKY = (185, 176, 255)
 KRAFT = (200, 154, 100)
 KRAFT_D = (170, 124, 75)
 BRIGHTS = [RED, YELLOW, BLUE, GREEN, PINK, SKY]
 
 TABLES = {
-    "classic-games": [(219, 232, 213), (205, 224, 199), (226, 236, 222)],
-    "collecting": [(246, 231, 198), (240, 222, 184), (232, 219, 196)],
-    "care-and-repair": [(227, 236, 244), (214, 228, 240), (232, 238, 232)],
-    "game-night": [(248, 220, 211), (243, 208, 196), (236, 226, 240)],
-    "buying-in-nz": [(233, 226, 240), (222, 232, 226), (240, 232, 214)],
+    "classic-games": [(27, 26, 58), (32, 29, 70), (35, 33, 80)],
+    "collecting": [(36, 26, 62), (42, 30, 70), (30, 27, 64)],
+    "care-and-repair": [(22, 30, 62), (26, 34, 70), (24, 28, 58)],
+    "game-night": [(40, 24, 64), (46, 28, 72), (34, 24, 60)],
+    "buying-in-nz": [(26, 36, 66), (30, 32, 72), (28, 26, 58)],
 }
 
 LW = 6 * S  # outline width
@@ -385,7 +385,7 @@ SCENES = {
 try:
     from PIL import ImageFont
 
-    _font_path = os.environ.get("SHRIKHAND_TTF") or os.path.join(ROOT, "scripts", "fonts", "Shrikhand-Regular.ttf")
+    _font_path = os.environ.get("DISPLAY_TTF") or os.path.join(ROOT, "scripts", "fonts", "Bungee-Regular.ttf")
     FONT_DISPLAY_BIG = ImageFont.truetype(_font_path, 150 * S)
 except Exception:  # older Pillow without sized default fonts
     FONT_DISPLAY_BIG = ImageFont.load_default()
@@ -397,7 +397,7 @@ def paint(slug, category):
     base = Image.new("RGBA", (W * S, H * S), table + (255,))
     # faint dotted tabletop pattern
     d = ImageDraw.Draw(base)
-    dot = tuple(max(0, c - 14) for c in table)
+    dot = tuple(min(255, c + 18) for c in table)
     step = 36 * S
     for y in range(0, H * S, step):
         for x in range((y // step % 2) * step // 2, W * S, step):

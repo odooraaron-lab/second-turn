@@ -46,6 +46,16 @@ Redeploy after adding variables. See `.env.example` for the full list.
 ## Testing a purchase
 With Stripe test keys, list a game in `/admin`, then buy it with card `4242 4242 4242 4242`, any future expiry and any CVC. Try it once with courier and once with pick-up. It should turn Sold and appear in `/admin/orders`.
 
+## Collector cards
+Every listing is shown as a collector card, ported from the Property Wars trading card: yellow bevelled border, face tinted by rarity, holo shine on rare cards, the price as a hanging tag, condition as orbs, the year as the big number, and a card number (No. 0012). There's nothing extra to fill in: the card is made from the listing the moment it's saved, and shown at the top of the game's edit page in admin.
+
+Rarity is worked out automatically (`lib/collector.ts`): counted complete, better condition and older games score higher.
+- **Common**, **Uncommon**, **Rare** (holo) and **Vintage** (holo) by score
+- **Sealed** games always get the gold Sealed frame
+- Spare parts are always Common
+
+Card styles: `app/collector-card.css`. Card layout: `components/CollectorCard.tsx`.
+
 ## Listing a game
 Admin asks for photos (box front, box back, everything laid out), title, category, **is everything in the box?**, condition, description, decade, year, publisher and players.
 
@@ -78,13 +88,13 @@ To add a post: copy an entry in the right file, give it a new slug and date, wri
 
 ## Editing content
 - Name, tagline, Google titles, keywords, categories, decades, conditions, price filters, courier price, pick-up, returns, About text: `site.config.ts`
-- Colour theme: `theme` in `site.config.ts`: `"board"` (mint), `"kraft"` (cardboard) or `"sky"` (pale blue)
+- Colours (Arcade pop): the tokens at the top of `app/globals.css`
 - Home page board squares: `app/(site)/page.tsx`
 - Delivery and returns wording: `app/(site)/shipping-and-returns/page.tsx`
 - Logo, app icons, share image: `python3 scripts/brand-images.py` (needs `pip install pillow`)
 - Blog covers: `python3 scripts/blog-images.py` (`--all` to redraw everything; needs `pip install pillow numpy`)
 
-The fonts are Shrikhand (headlines) and Chivo (everything else), both under the SIL Open Font License; copies for the image scripts are in `scripts/fonts`.
+The fonts are Bungee (headlines), Nunito Sans (everything else) and Fredoka (card names and numbers), all under the SIL Open Font License; copies for the image scripts are in `scripts/fonts`.
 
 ## How sales work
 Each game is one-off. Pressing Buy now places a 30-minute hold so two people can't pay for the same game; an abandoned checkout releases it. When payment succeeds the game is marked Sold and stays listed until you take it down in admin. Every listing is copied to the Stripe product catalogue automatically, and sold, hidden or deleted games are archived there. **Admin > Setup** checks Stripe, the webhook, emails and every listing.

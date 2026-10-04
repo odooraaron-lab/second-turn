@@ -1,6 +1,6 @@
 // Everything shop-specific lives here, so names, wording and settings can change without touching the pages.
 
-export type Theme = "board" | "kraft" | "sky";
+export type Theme = "arcade";
 
 // Shipping, pick-up and returns. These feed the Shipping and returns page, the checkout delivery
 // estimate and the Google structured data, so all three always agree.
@@ -47,8 +47,8 @@ export const site = {
   locale: "en_NZ",
   currency: "nzd",
 
-  // Colour direction. "board" (game-board mint), "kraft" (cardboard box) or "sky" (pale blue).
-  theme: "board" as Theme,
+  // Colour direction: "Arcade pop" (deep violet, cream, hot pink, teal). Colours live at the top of app/globals.css.
+  theme: "arcade" as Theme,
 
   contactEmail: "", // e.g. "hello@secondturn.co.nz", shown in the footer when filled in
   instagram: "",

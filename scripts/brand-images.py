@@ -13,14 +13,14 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FONTS = os.path.join(ROOT, "scripts", "fonts")
-INK = (28, 43, 68)
-RED = (210, 58, 42)
-YELLOW = (242, 182, 50)
-BLUE = (47, 109, 181)
-MINT = (219, 232, 213)
-CARD = (255, 253, 247)
-PINK = (246, 201, 191)
-SKY = (199, 220, 242)
+INK = (12, 11, 34)
+RED = (255, 94, 138)
+YELLOW = (255, 210, 63)
+BLUE = (63, 224, 197)
+MINT = (27, 26, 58)
+CARD = (255, 244, 226)
+PINK = (255, 179, 200)
+SKY = (185, 176, 255)
 
 config = open(os.path.join(ROOT, "site.config.ts"), encoding="utf8").read()
 NAME = re.search(r'name:\s*"([^"]+)"', config).group(1)
@@ -73,10 +73,10 @@ def icon(size, background=None, scale=0.78):
 def write_svg():
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <g transform="rotate(-8 32 32)">
-    <rect x="9" y="12" width="46" height="46" rx="11" fill="#1c2b44"/>
-    <rect x="9" y="8" width="46" height="46" rx="11" fill="#d23a2a" stroke="#1c2b44" stroke-width="3.5"/>
-    <circle cx="21" cy="19.5" r="4.4" fill="#fffdf7"/>
-    <circle cx="43" cy="42.5" r="4.4" fill="#fffdf7"/>
+    <rect x="9" y="12" width="46" height="46" rx="11" fill="#0c0b22"/>
+    <rect x="9" y="8" width="46" height="46" rx="11" fill="#ff5e8a" stroke="#0c0b22" stroke-width="3.5"/>
+    <circle cx="21" cy="19.5" r="4.4" fill="#fff4e2"/>
+    <circle cx="43" cy="42.5" r="4.4" fill="#fff4e2"/>
   </g>
 </svg>
 """
@@ -89,33 +89,33 @@ def share_image():
     d = ImageDraw.Draw(img)
     for y in range(0, H * S, 36 * S):
         for x in range(0, W * S, 36 * S):
-            d.ellipse([x - 2 * S, y - 2 * S, x + 2 * S, y + 2 * S], fill=(204, 220, 197))
+            d.ellipse([x - 2 * S, y - 2 * S, x + 2 * S, y + 2 * S], fill=(44, 42, 86))
     # board on the right
     bx, by, bs = 700 * S, 95 * S, 440 * S
     d.rounded_rectangle([bx, by + 12 * S, bx + bs, by + bs + 12 * S], 30 * S, fill=INK)
-    d.rounded_rectangle([bx, by, bx + bs, by + bs], 30 * S, fill=CARD, outline=INK, width=6 * S)
+    d.rounded_rectangle([bx, by, bx + bs, by + bs], 30 * S, fill=(42, 40, 87), outline=INK, width=6 * S)
     gap, pad = 14 * S, 22 * S
     cell = (bs - pad * 2 - gap * 2) / 3
-    colours = [YELLOW, PINK, SKY, MINT, CARD, YELLOW, PINK, SKY, INK]
+    colours = [YELLOW, BLUE, SKY, PINK, YELLOW, BLUE, SKY, PINK, (42, 40, 87)]
     order = [(2, 0), (2, 1), (2, 2), (1, 2), (1, 1), (1, 0), (0, 0), (0, 1), (0, 2)]
-    numf = font("Shrikhand-Regular.ttf", 34 * S)
+    numf = font("Bungee-Regular.ttf", 30 * S)
     for n, (r, c) in enumerate(order):
         x0 = bx + pad + c * (cell + gap)
         y0 = by + pad + r * (cell + gap)
         fill = RED if n == 0 else colours[n]
         d.rounded_rectangle([x0, y0, x0 + cell, y0 + cell], 16 * S, fill=fill, outline=INK, width=5 * S)
-        d.text((x0 + 14 * S, y0 + 8 * S), str(n + 1), font=numf, fill=CARD if n in (0, 8) else INK)
+        d.text((x0 + 14 * S, y0 + 8 * S), str(n + 1), font=numf, fill=CARD if n == 8 else INK)
     # pawn on square 1
     px, py = bx + pad + cell * 0.4, by + pad + 2 * (cell + gap) + cell * 0.14
     pw, ph = 60 * S, 78 * S
     d.polygon([(px + pw * 0.36, py + ph * 0.3), (px + pw * 0.64, py + ph * 0.3), (px + pw * 0.8, py + ph * 0.86),
                (px + pw, py + ph * 0.94), (px + pw, py + ph), (px, py + ph), (px, py + ph * 0.94), (px + pw * 0.2, py + ph * 0.86)],
-              fill=BLUE, outline=INK, width=5 * S)
+              fill=CARD, outline=INK, width=5 * S)
     hr = pw * 0.27
-    d.ellipse([px + pw / 2 - hr, py + hr * 0.2, px + pw / 2 + hr, py + hr * 2.2], fill=BLUE, outline=INK, width=5 * S)
+    d.ellipse([px + pw / 2 - hr, py + hr * 0.2, px + pw / 2 + hr, py + hr * 2.2], fill=CARD, outline=INK, width=5 * S)
     die(d, 640 * S, 520 * S, 92 * S, angle=18, body=CARD, pip=INK, line=5 * S)
     # words on the left
-    title = font("Shrikhand-Regular.ttf", 112 * S)
+    title = font("Bungee-Regular.ttf", 92 * S)
     words = NAME.split(" ")
     lines, cur = [], ""
     for w in words:
@@ -128,9 +128,9 @@ def share_image():
     lines.append(cur)
     y = 150 * S
     for ln in lines:
-        d.text((70 * S, y), ln, font=title, fill=INK)
+        d.text((70 * S, y), ln, font=title, fill=CARD)
         y += 124 * S
-    sub = font("Chivo.ttf", 34 * S, weight=600)
+    sub = font("NunitoSans.ttf", 34 * S)
     words, line_, out = TAGLINE.split(" "), "", []
     for w in words:
         trial = (line_ + " " + w).strip()
@@ -142,7 +142,7 @@ def share_image():
     out.append(line_)
     y += 18 * S
     for ln in out:
-        d.text((74 * S, y), ln, font=sub, fill=(79, 93, 114))
+        d.text((74 * S, y), ln, font=sub, fill=(201, 195, 232))
         y += 46 * S
     img = img.resize((W, H), Image.LANCZOS)
     img.save(os.path.join(ROOT, "public", "opengraph-image.png"), optimize=True)

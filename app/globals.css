@@ -1,54 +1,45 @@
-@import "@fontsource/shrikhand/latin-400.css";
-@import "@fontsource-variable/chivo/index.css";
+@import "@fontsource/bungee/latin-400.css";
+@import "@fontsource-variable/nunito-sans/index.css";
+@import "@fontsource-variable/fredoka/index.css";
 
-/* ---------- Tokens ----------
-   Taken from a vintage game board: the mint board itself, navy print, a red pawn, a yellow die, a blue track.
-   paper: the page (the board). table: what each game is photographed sitting on. card: rules-card white.
-   dot: the red pawn, used for Sold and the main action. */
+/* ---------- Tokens: Arcade pop ----------
+   Night-time arcade: deep violet board, cream print, hot pink for actions, teal for price stickers.
+   paper: the page. table/wall: what each photo sits on. card: raised panels.
+   dot: the main action and Sold. drop: the hard shadow under raised things. */
 :root,
-[data-theme="board"] {
-  --paper: #dbe8d5;
-  --wall: #cfdfc8;
-  --wall-deep: #c2d6ba;
-  --tint: #eef3e4;
-  --card: #fffdf7;
-  --ink: #1c2b44;
-  --muted: #4f5d72;
-  --line: #b9cbb3;
-  --dot: #d23a2a;
-  --hold: #a7741c;
-  --yellow: #f2b632;
-  --blue: #2f6db5;
-  --green: #2e7d4f;
-  --shadow: 28 43 68;
-  --deep: #1c2b44;
-  --deep-2: #2a3d5c;
-  --on-deep: #fffdf7;
-  --on-deep-muted: #bcc6d6;
-  --accent: #f2b632;
-  --action: #d23a2a;
-}
-[data-theme="kraft"] {
-  --paper: #e8d9bf;
-  --wall: #dccaa9;
-  --wall-deep: #d1bd98;
-  --tint: #f2e8d6;
-  --line: #cdb88f;
-  --muted: #5d5546;
-  --shadow: 60 45 25;
-}
-[data-theme="sky"] {
-  --paper: #d9e6f0;
-  --wall: #c9dbe9;
-  --wall-deep: #bad0e1;
-  --tint: #ebf2f7;
-  --line: #b3c8d9;
+[data-theme="arcade"] {
+  color-scheme: dark;
+  --paper: #1b1a3a;
+  --wall: #232150;
+  --wall-deep: #2a2860;
+  --tint: #201e46;
+  --card: #2a2857;
+  --ink: #fff4e2;
+  --muted: #c9c3e8;
+  --line: #3d3a7a;
+  --dot: #ff5e8a;
+  --on-dot: #14132e;
+  --hold: #3fe0c5;
+  --yellow: #3fe0c5;
+  --sun: #ffd23f;
+  --blue: #8ea2ff;
+  --green: #9df29b;
+  --violet: #7c6cf0;
+  --drop: #0c0b22;
+  --shadow: 0 0 0;
+  --deep: #121130;
+  --deep-2: #1d1b40;
+  --on-deep: #fff4e2;
+  --on-deep-muted: #b9b3dc;
+  --accent: #3fe0c5;
+  --action: #ff5e8a;
+  --text-muted: #c9c3e8;
 }
 
 :root {
-  --display: "Shrikhand", "Cooper Black", Georgia, serif;
-  --head: "Chivo Variable", -apple-system, "Segoe UI", Roboto, sans-serif;
-  --sans: "Chivo Variable", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --display: "Bungee", "Arial Black", Impact, sans-serif;
+  --head: "Nunito Sans Variable", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sans: "Nunito Sans Variable", -apple-system, "Segoe UI", Roboto, sans-serif;
   --gutter: clamp(16px, 4.5vw, 40px);
   --max: 1240px;
   --radius: 10px;
@@ -1295,7 +1286,7 @@ html.menu-open {
   width: 100%;
   font: 16px/1.4 var(--sans); /* 16px stops iOS zooming into fields */
   color: var(--ink);
-  background: #fff;
+  background: var(--wall);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 12px 14px;
@@ -1473,7 +1464,7 @@ html.menu-open {
   padding: 16px;
   margin-bottom: 12px;
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--card);
 }
 .order-top {
   display: flex;
@@ -1829,7 +1820,7 @@ html.menu-open {
 .secret code {
   word-break: break-all;
   padding: 10px;
-  background: #fff;
+  background: var(--wall);
   font-size: 13px;
 }
 
@@ -2113,7 +2104,7 @@ html.menu-open {
   width: min(184px, 52vw);
   aspect-ratio: 4 / 3;
   padding: 5px;
-  background: #fbf8f2;
+  background: var(--card);
   box-shadow: 0 1px 2px rgb(var(--shadow) / 0.12), 0 6px 16px -8px rgb(var(--shadow) / 0.35);
   margin-bottom: 6px;
 }
@@ -2134,7 +2125,7 @@ html.menu-open {
   width: 100%;
   aspect-ratio: 16 / 9;
   padding: 0;
-  border: 6px solid #fbf8f2;
+  border: 6px solid var(--card);
 }
 .post-cover-wide img {
   object-fit: cover;
@@ -2195,7 +2186,7 @@ h3 {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 24px;
+  font-size: 21px;
   color: var(--ink);
 }
 .wordmark-die {
@@ -2203,13 +2194,13 @@ h3 {
   height: 26px;
   flex: none;
   border-radius: 7px;
-  background: radial-gradient(circle at 30% 30%, var(--card) 0 3px, transparent 3.5px),
-    radial-gradient(circle at 70% 70%, var(--card) 0 3px, transparent 3.5px), var(--dot);
-  box-shadow: 0 2px 0 var(--ink);
+  background: radial-gradient(circle at 30% 30%, var(--ink) 0 3px, transparent 3.5px),
+    radial-gradient(circle at 70% 70%, var(--ink) 0 3px, transparent 3.5px), var(--dot);
+  box-shadow: 0 2px 0 var(--drop);
   transform: rotate(-8deg);
 }
 .header-bar {
-  box-shadow: 0 2px 0 var(--ink);
+  box-shadow: 0 2px 0 var(--drop);
 }
 .menu-btn {
   border: 2px solid var(--ink);
@@ -2234,7 +2225,7 @@ h3 {
   background: var(--ink);
   color: var(--card);
   font: 700 16px/1 var(--sans);
-  box-shadow: 0 3px 0 var(--ink);
+  box-shadow: 0 3px 0 var(--drop);
   transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
 .btn:hover {
@@ -2243,14 +2234,14 @@ h3 {
 }
 .btn:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--ink);
+  box-shadow: 0 1px 0 var(--drop);
 }
 .btn-buy,
 .btn-buy:hover,
 .btn-buy:focus-visible {
   background: var(--dot);
-  border-color: var(--ink);
-  color: #fff;
+  border-color: var(--drop);
+  color: var(--on-dot);
 }
 .btn-quiet,
 .btn-quiet:hover {
@@ -2272,11 +2263,11 @@ h3 {
   font-size: 14px;
   background: var(--card);
   color: var(--ink);
-  box-shadow: 0 2px 0 var(--ink);
+  box-shadow: 0 2px 0 var(--drop);
 }
 .card-buy .btn-buy:hover {
   background: var(--dot);
-  color: #fff;
+  color: var(--on-dot);
 }
 .text-link,
 .section-head a {
@@ -2311,7 +2302,7 @@ h3 {
 .hero {
   padding: clamp(24px, 6vw, 64px) 0 clamp(28px, 6vw, 56px);
   border-bottom: 2px solid var(--ink);
-  background: radial-gradient(circle at 1px 1px, rgb(var(--shadow) / 0.09) 1px, transparent 1.5px) 0 0 / 18px 18px,
+  background: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 1.5px) 0 0 / 18px 18px,
     var(--paper);
 }
 .hero-inner {
@@ -2361,7 +2352,7 @@ h3 {
   background: var(--card);
   border: 2px solid var(--ink);
   border-radius: 16px;
-  box-shadow: 0 6px 0 var(--ink);
+  box-shadow: 0 6px 0 var(--drop);
 }
 .board {
   list-style: none;
@@ -2386,6 +2377,7 @@ h3 {
 .sq-8 { grid-area: 1 / 2; }
 .sq-9 { grid-area: 1 / 3; }
 .sq a {
+  border-color: var(--drop) !important;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -2399,13 +2391,13 @@ h3 {
   overflow: hidden;
   transition: transform 0.15s ease;
 }
-.sq:nth-child(5n + 1) a { background: var(--yellow); }
-.sq:nth-child(5n + 2) a { background: #f6c9bf; }
-.sq:nth-child(5n + 3) a { background: #c7dcf2; }
-.sq:nth-child(5n + 4) a { background: var(--paper); }
-.sq:nth-child(5n + 5) a { background: var(--card); }
-.sq-1 a { background: var(--dot) !important; color: #fff; }
-.sq-9 a { background: var(--ink) !important; color: var(--card); }
+.sq a { color: var(--on-dot); }
+.sq:nth-child(4n + 1) a { background: var(--sun); }
+.sq:nth-child(4n + 2) a { background: var(--yellow); }
+.sq:nth-child(4n + 3) a { background: #b9b0ff; }
+.sq:nth-child(4n + 4) a { background: #ffb3c8; }
+.sq-1 a { background: var(--dot) !important; }
+.sq-9 a { background: var(--card) !important; color: var(--ink); border-color: var(--ink); }
 .sq a:hover,
 .sq a:focus-visible {
   transform: translateY(-2px);
@@ -2444,7 +2436,7 @@ h3 {
 }
 .board-path polyline {
   fill: none;
-  stroke: var(--ink);
+  stroke: var(--yellow);
   stroke-width: 10;
   stroke-dasharray: 3 7;
   stroke-linecap: round;
@@ -2466,8 +2458,8 @@ h3 {
 .pawn svg {
   display: block;
   width: 100%;
-  fill: var(--blue);
-  stroke: var(--ink);
+  fill: var(--ink);
+  stroke: var(--drop);
   stroke-width: 2.5;
 }
 .pawn .pawn-shadow {
@@ -2534,7 +2526,7 @@ h3 {
   line-height: 1;
   font-variant-numeric: tabular-nums;
   transform: rotate(8deg);
-  box-shadow: 0 2px 0 var(--ink);
+  box-shadow: 0 2px 0 var(--drop);
 }
 .sticker small {
   font-size: 9px;
@@ -2598,16 +2590,16 @@ h3 {
   color: var(--green);
 }
 .complete-complete .complete-icon {
-  background: var(--green)
+  background: #2e9b4f
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5.2 4.2 7.3 8 3' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
     center / 10px no-repeat;
-  border-color: var(--green);
+  border-color: #2e9b4f;
 }
 .complete-missing {
-  color: #9a5a00;
+  color: var(--sun);
 }
 .complete-missing .complete-icon {
-  background: var(--yellow);
+  background: var(--sun);
 }
 .complete-not-counted {
   color: var(--muted);
@@ -2696,7 +2688,7 @@ h3 {
 .delivery-opt:has(input:checked),
 .choice:has(input:checked) {
   border-color: var(--ink);
-  box-shadow: 0 3px 0 var(--ink);
+  box-shadow: 0 3px 0 var(--drop);
 }
 .delivery-opt input,
 .choice input {
@@ -2781,8 +2773,8 @@ h3 {
   margin-bottom: 10px;
   border-radius: 8px;
   background: var(--yellow);
-  color: var(--ink);
-  border: 2px solid var(--ink);
+  color: var(--on-dot);
+  border: 2px solid var(--drop);
   font-family: var(--display);
   font-size: 18px;
   font-weight: 400;
@@ -2851,7 +2843,7 @@ h3 {
   border: 2px solid var(--ink);
   border-radius: var(--radius);
   background: var(--wall);
-  box-shadow: 0 4px 0 var(--ink);
+  box-shadow: 0 4px 0 var(--drop);
   transition: transform 0.15s ease;
 }
 .era-tile:hover .era-lid {
@@ -2932,7 +2924,7 @@ h3 {
 .post-cover {
   border: 2px solid var(--ink);
   padding: 0;
-  box-shadow: 0 3px 0 var(--ink);
+  box-shadow: 0 3px 0 var(--drop);
 }
 .post-cover-wide {
   border: 2px solid var(--ink);
@@ -2979,7 +2971,7 @@ h3 {
   display: grid;
   place-items: center;
   padding: calc(28px + env(safe-area-inset-top)) var(--gutter) 40px;
-  background: radial-gradient(circle at 1px 1px, rgb(var(--shadow) / 0.09) 1px, transparent 1.5px) 0 0 / 18px 18px,
+  background: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 1.5px) 0 0 / 18px 18px,
     var(--paper);
 }
 .lost-card {
@@ -2991,7 +2983,7 @@ h3 {
   background: var(--card);
   border: 2px solid var(--ink);
   border-radius: 16px;
-  box-shadow: 0 6px 0 var(--ink);
+  box-shadow: 0 6px 0 var(--drop);
 }
 .lost-brand {
   font-weight: 700;
@@ -3027,26 +3019,26 @@ h3 {
   overflow: visible;
 }
 .box-side {
-  fill: var(--ink);
+  fill: var(--drop);
 }
 .box-lid {
   fill: var(--dot);
-  stroke: var(--ink);
+  stroke: var(--drop);
   stroke-width: 3;
 }
 .box-panel {
-  fill: var(--card);
-  stroke: var(--ink);
+  fill: var(--paper);
+  stroke: var(--drop);
   stroke-width: 2.5;
 }
 .box-track rect {
-  stroke: var(--ink);
+  stroke: var(--drop);
   stroke-width: 2;
 }
-.box-track rect:nth-child(4n + 1) { fill: var(--yellow); }
-.box-track rect:nth-child(4n + 2) { fill: #c7dcf2; }
-.box-track rect:nth-child(4n + 3) { fill: #f6c9bf; }
-.box-track rect:nth-child(4n + 4) { fill: var(--paper); }
+.box-track rect:nth-child(4n + 1) { fill: var(--sun); }
+.box-track rect:nth-child(4n + 2) { fill: var(--yellow); }
+.box-track rect:nth-child(4n + 3) { fill: #b9b0ff; }
+.box-track rect:nth-child(4n + 4) { fill: #ffb3c8; }
 .box-title {
   font-family: var(--display);
   font-size: 40px;
@@ -3063,12 +3055,12 @@ h3 {
   animation: tumble 0.9s cubic-bezier(0.25, 1.4, 0.5, 1) 0.2s both;
 }
 .box-die rect {
-  fill: var(--card);
-  stroke: var(--ink);
+  fill: var(--ink);
+  stroke: var(--drop);
   stroke-width: 3;
 }
 .box-die circle {
-  fill: var(--dot);
+  fill: var(--paper);
 }
 @keyframes tumble {
   from {
@@ -3083,7 +3075,7 @@ h3 {
 }
 .pickup-flag {
   padding: 10px 12px;
-  background: #fdf1d6;
+  background: rgb(63 224 197 / 0.14);
   border-radius: 8px;
   font-size: 15px;
 }
