@@ -1,0 +1,90 @@
+# Second Turn
+
+Second-hand board game shop. Built the same way as the Melody Mitt and Spare Change shops: Next.js 16 on Vercel, Neon Postgres, Vercel Blob for photos, Stripe Checkout for payments, Resend for order emails.
+
+"Second Turn" is a placeholder name. Change `name` in `site.config.ts`, then run `python3 scripts/brand-images.py` to redraw the logo and share image with the new name.
+
+- Public site: `/`, `/shop`, `/shop/[slug]`, `/shop/category/[id]`, `/shop/era/[id]`, `/blog`, `/about`, `/shipping-and-returns`
+- Admin: `/admin` (list games from your phone camera, orders, setup checks)
+
+## Setup
+
+### 1. GitHub and Vercel
+Put this folder in a new GitHub repo, then in Vercel: **Add New > Project** and import it. The first deploy may fail until the variables below are added.
+
+### 2. Database (Neon)
+In the Vercel project: **Storage > Create > Neon**. This adds `DATABASE_URL`.
+
+Use a new database for this shop. The tables are created automatically on the first visit, so there's no SQL to run. They're named `bg_products`, `bg_orders` and `bg_email_optouts`, so they can't clash with another shop's tables even if a database is shared by mistake.
+
+### 3. Photo storage (Vercel Blob)
+**Storage > Create > Blob**, connect it to the project. This adds `BLOB_READ_WRITE_TOKEN`.
+
+### 4. Stripe
+- `STRIPE_SECRET_KEY`: Stripe dashboard > Developers > API keys (start with the test key).
+- Webhook: easiest is **Admin > Setup > Create webhook** once the site is live, then paste the signing secret it shows into `STRIPE_WEBHOOK_SECRET` and redeploy. Or by hand: Developers > Webhooks > Add endpoint
+  - URL: `https://YOUR-SITE/api/stripe/webhook`
+  - Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.expired`
+
+The Stripe account is shared with your other shops. Every checkout here is tagged `site=boardgames` and the webhook ignores anything without that tag, so the shops never mix up each other's sales.
+
+### 5. Emails (Resend)
+- `RESEND_API_KEY` from resend.com.
+- Once the domain is bought, verify it in Resend, then set `EMAIL_FROM`, e.g. `Second Turn <orders@secondturn.co.nz>`.
+- `OWNER_EMAIL`: where your sale alerts go.
+
+Until a domain is verified, Resend only delivers to your own Resend account email. Orders still work.
+
+### 6. Admin login
+Set `ADMIN_USERNAME`, `ADMIN_PASSWORD` (long and unique) and `SESSION_SECRET` (run `openssl rand -base64 32`).
+
+### 7. Site URL
+`NEXT_PUBLIC_SITE_URL` = the live URL, no trailing slash. Update it when the domain is connected, then redeploy.
+
+Redeploy after adding variables. See `.env.example` for the full list.
+
+## Testing a purchase
+With Stripe test keys, list a game in `/admin`, then buy it with card `4242 4242 4242 4242`, any future expiry and any CVC. Try it once with courier and once with pick-up. It should turn Sold and appear in `/admin/orders`.
+
+## Listing a game
+Admin asks for photos (box front, box back, everything laid out), title, category, **is everything in the box?**, condition, description, decade, year, publisher and players.
+
+- **Counted complete**: every piece counted against the rules. Shown with a green tick.
+- **Missing pieces**: counted, and the description must say what's missing (admin won't save without it).
+- **Not counted**: looks full but not checked piece by piece.
+
+Conditions: Sealed, Like new, Good, Well played, For parts. Google is told the matching condition (new, used or damaged).
+
+## Delivery and pick-up
+Each game has its own courier price (default $12, change it in `site.config.ts`). If pick-up is on, buyers choose **Courier** or **Pick up in Whangārei** on the game's page before paying. Pick-up checkouts don't ask for an address. Your sale email says it's a pick-up, and the order shows **Mark as collected** instead of a tracking box. The quick "Buy now" button on listing cards always uses courier.
+
+Turn pick-up off, or change the town, under `pickup` in `site.config.ts`.
+
+## Returns and the completeness promise
+`returns.days` = 0 means no change-of-mind returns (faulty or not-as-described is still put right). `returns.completenessDays` = 7 adds a promise: if a game listed as Counted complete turns out short, the buyer has 7 days to tell you and you find the piece or refund. Set it to 0 to remove the promise from the site.
+
+## Browsing by decade
+Each game can be given a decade in admin. Every decade and category has its own page Google can index, for example `/shop/era/1980s` and `/shop/category/parts`, linked from the menu, the home board, the footer and the blog. Edit the decades, their Google titles and intros in `site.config.ts`.
+
+## Blog
+33 posts in five topics (classic games, collecting, care and repair, game night, buying in NZ), in `content/blog/`. Mark up to five with `featured: true` to list them under "Popular reads" in the footer. Posts link to each other and to shop pages, and posts with a decade or category show a few matching games at the end.
+
+To add a post: copy an entry in the right file, give it a new slug and date, write the body, then run `python3 scripts/blog-images.py` to draw its cover. To use a real photo instead, save it over `public/blog/<slug>.jpg` (landscape, about 1200 × 675).
+
+## Buyer emails
+- **Order confirmation** to the buyer (courier or pick-up wording), with a few more games from the same decade, and a sale alert to you.
+- **Shipped** email with tracking when you mark a courier order shipped. Pick-ups are just marked collected.
+- **Follow-up** about 21 days later, only to buyers who ticked "Email me when new games are listed?" at checkout, with one-click unsubscribe. Set `CRON_SECRET` to switch it on; it runs daily via `vercel.json`. Change the delay with `followUpDays`.
+
+## Editing content
+- Name, tagline, Google titles, keywords, categories, decades, conditions, price filters, courier price, pick-up, returns, About text: `site.config.ts`
+- Colour theme: `theme` in `site.config.ts`: `"board"` (mint), `"kraft"` (cardboard) or `"sky"` (pale blue)
+- Home page board squares: `app/(site)/page.tsx`
+- Delivery and returns wording: `app/(site)/shipping-and-returns/page.tsx`
+- Logo, app icons, share image: `python3 scripts/brand-images.py` (needs `pip install pillow`)
+- Blog covers: `python3 scripts/blog-images.py` (`--all` to redraw everything; needs `pip install pillow numpy`)
+
+The fonts are Shrikhand (headlines) and Chivo (everything else), both under the SIL Open Font License; copies for the image scripts are in `scripts/fonts`.
+
+## How sales work
+Each game is one-off. Pressing Buy now places a 30-minute hold so two people can't pay for the same game; an abandoned checkout releases it. When payment succeeds the game is marked Sold and stays listed until you take it down in admin. Every listing is copied to the Stripe product catalogue automatically, and sold, hidden or deleted games are archived there. **Admin > Setup** checks Stripe, the webhook, emails and every listing.
