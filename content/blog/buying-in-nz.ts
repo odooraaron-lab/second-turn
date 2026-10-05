@@ -350,7 +350,7 @@ Board games are awkward to send. Boxes are big for their weight, corners crush e
 
 ## Delivery times
 
-Games are packed and sent by tracked courier within a few working days of your order, then usually take a few working days more to arrive. You'll get an email with your tracking number once it's on its way. See [shipping and returns](/shipping-and-returns) for the current times.
+Games are packed and sent by tracked courier within a few working days of your order, then usually take a few working days more to arrive. You'll get an email with your tracking number once it's on its way. See our [shipping policy](/shipping-policy) for the current times.
 
 ## Rural addresses
 
@@ -362,7 +362,7 @@ If you're in or near Whangārei, choose **Pick up in Whangārei** on the game's 
 
 ## When it arrives
 
-Open the box and check it over. If anything has been damaged on the way, or a game listed as counted complete is missing something, get in touch with photos and we'll put it right. The details are on our [shipping and returns](/shipping-and-returns) page.
+Open the box and check it over. If anything has been damaged on the way, or a game listed as counted complete is missing something, get in touch with photos and we'll put it right. The details are on our [shipping policy](/shipping-policy) and [returns policy](/returns-policy).
 
 ## Sending a game yourself
 

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The old combined page now lives as separate shipping and returns policies
+  async redirects() {
+    return [{ source: "/shipping-and-returns", destination: "/shipping-policy", permanent: true }];
+  },
   images: {
     remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
     // AVIF is roughly 20% smaller than WebP; browsers that can't show it get WebP.

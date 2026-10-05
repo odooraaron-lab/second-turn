@@ -4,7 +4,7 @@ Second-hand board game shop. Built the same way as the Melody Mitt and Spare Cha
 
 "Second Turn" is a placeholder name. Change `name` in `site.config.ts`, then run `python3 scripts/brand-images.py` to redraw the logo and share image with the new name.
 
-- Public site: `/`, `/shop`, `/shop/[slug]`, `/shop/category/[id]`, `/shop/era/[id]`, `/blog`, `/about`, `/shipping-and-returns`
+- Public site: `/`, `/shop`, `/shop/[slug]`, `/shop/category/[id]`, `/shop/era/[id]`, `/blog`, `/about`, `/contact`, `/shipping-policy`, `/returns-policy`, `/terms`, `/privacy-policy`
 - Admin: `/admin` (list games from your phone camera, orders, setup checks)
 
 ## Setup
@@ -93,13 +93,29 @@ Two free things worth doing once the site is live:
 1. **Google Search Console** (search.google.com/search-console): add the site, then submit `https://YOUR-SITE/sitemap.xml`. This gets new games indexed faster and shows which searches find you.
 2. **Google Merchant Center** (merchants.google.com): free product listings in Google Shopping. Add a product source by scheduled fetch from `https://YOUR-SITE/feeds/google.xml`, set to daily. The same feed works for Facebook and Instagram catalogues. Only games that can be bought right now are in it.
 
+### Policies for Google Ads and Merchant Center
+Google checks that a shop shows clear shipping and returns policies, a privacy policy and a way to contact you, and that the product data matches them. All of that is built in, linked from every page footer, the menu, each game's page and Stripe checkout:
+
+- **Shipping policy** `/shipping-policy`: NZ only, cost per game shown before checkout, handling and delivery times, tracking, packing, pick-up, lost or damaged parcels.
+- **Returns and refunds** `/returns-policy`: change-of-mind rule, faulty or not-as-described, the counted-complete promise, cancellations, how and when refunds are paid, Consumer Guarantees Act wording.
+- **Terms of sale** `/terms`, **Privacy policy** `/privacy-policy` (NZ Privacy Act 2020) and **Contact** `/contact`.
+
+Every number in them (days, hours, prices, GST, pick-up) comes from `site.config.ts`, the same place the product data for Google reads from, so the pages and the data can't disagree. Change a setting, update `policiesUpdated`, redeploy.
+
+**Before applying for Google Ads or Merchant Center:**
+1. Set `contactEmail` in `site.config.ts` (required) and, if you like, `business.phone`. Set `business.tradingName`.
+2. Check the returns settings match what you want to offer: `returns.days` (0 = no change-of-mind returns), `completenessDays`, `cancelBeforeDispatch`, `refundDays`.
+3. In Merchant Center: **Settings > Business info** (name, website, contact email), verify and claim the website, then add a **Return policy** for NZ that matches `/returns-policy`, and **Shipping and returns > Shipping** for NZ with handling 1 to 3 days and transit 1 to 3 days, rate taken from the feed. Paste the policy URLs from **Admin > Setup**.
+
+This is a solid starting point written from the shop's settings, not legal advice; read it through once and adjust anything that doesn't match how you actually work.
+
 Trade-ins: `tradeIns` in `site.config.ts` is off. Turn it on and write your own note if you start buying or swapping games, and the home page FAQ will say so.
 
 ## Editing content
 - Name, tagline, Google titles, keywords, categories, decades, conditions, price filters, courier price, pick-up, returns, About text: `site.config.ts`
 - Colours (Arcade pop): the tokens at the top of `app/globals.css`
 - Home page board squares: `app/(site)/page.tsx`
-- Delivery and returns wording: `app/(site)/shipping-and-returns/page.tsx`
+- Policy wording: `app/(site)/shipping-policy`, `returns-policy`, `terms`, `privacy-policy` and `contact` (the numbers and switches come from `site.config.ts`)
 - Logo, app icons, share image: `python3 scripts/brand-images.py` (needs `pip install pillow`)
 - Blog covers: `python3 scripts/blog-images.py` (`--all` to redraw everything; needs `pip install pillow numpy`)
 

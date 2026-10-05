@@ -24,6 +24,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               "@type": "OnlineStore",
               "@id": `${site.url}/#store`,
               name: site.name,
+              legalName: site.business.tradingName,
               url: site.url,
               logo: `${site.url}/icon-512.png`,
               description: site.description,
@@ -31,9 +32,22 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               ...(site.pickup.enabled
                 ? { address: { "@type": "PostalAddress", addressLocality: site.pickup.town, addressCountry: "NZ" } }
                 : {}),
-              ...(site.contactEmail
-                ? { contactPoint: { "@type": "ContactPoint", contactType: "Customer Service", email: site.contactEmail } }
+              ...(site.contactEmail || site.business.phone
+                ? {
+                    contactPoint: {
+                      "@type": "ContactPoint",
+                      contactType: "customer service",
+                      areaServed: "NZ",
+                      availableLanguage: "en",
+                      url: `${site.url}/contact`,
+                      ...(site.contactEmail ? { email: site.contactEmail } : {}),
+                      ...(site.business.phone ? { telephone: site.business.phone } : {}),
+                    },
+                  }
                 : {}),
+              ...(site.contactEmail ? { email: site.contactEmail } : {}),
+              ...(site.business.phone ? { telephone: site.business.phone } : {}),
+              ...(site.business.gstRegistered && site.business.gstNumber ? { taxID: site.business.gstNumber } : {}),
               ...(sameAs.length ? { sameAs } : {}),
               hasMerchantReturnPolicy: { ...returnPolicy(), merchantReturnLink: policyUrl },
               hasShippingService: shippingService(),

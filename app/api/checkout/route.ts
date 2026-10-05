@@ -75,11 +75,13 @@ export async function POST(req: NextRequest) {
         // Pick-up orders don't need an address; the phone number is for arranging a time.
         ...(delivery === "courier"
           ? { shipping_address_collection: { allowed_countries: ["NZ"] }, shipping_options: [courier] }
-          : {
-              custom_text: {
-                submit: { message: `Pick up in ${site.pickup.town}. ${site.pickup.note}` },
-              },
-            }),
+          : {}),
+        // Shown under the pay button: delivery, plus the policies Google and buyers expect to see before paying.
+        custom_text: {
+          submit: {
+            message: `${delivery === "pickup" ? `Pick up in ${site.pickup.town}. ${site.pickup.note} ` : ""}By paying you agree to our [terms of sale](${site.url}/terms). [Shipping](${site.url}/shipping-policy) · [Returns and refunds](${site.url}/returns-policy) · [Privacy](${site.url}/privacy-policy)`,
+          },
+        },
         phone_number_collection: { enabled: true },
         // Optional opt-in for "new games" emails (NZ law needs consent for marketing emails).
         custom_fields: [

@@ -3150,3 +3150,47 @@ h3 {
     gap: 28px !important;
   }
 }
+
+/* ---------- Policy pages ---------- */
+.policy-intro {
+  margin-top: 10px;
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 60ch;
+}
+.policy-updated {
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.policy-nav {
+  margin: 4px 0 24px;
+}
+.policy h2 {
+  scroll-margin-top: 84px;
+}
+.policy ul {
+  padding-left: 1.2em;
+}
+.policy li {
+  margin: 6px 0;
+}
+.contact-list {
+  display: grid;
+  gap: 0;
+  margin: 0 0 20px;
+  border-top: 1px solid var(--line);
+}
+.contact-list div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.contact-list dt {
+  font-weight: 700;
+}
+.contact-list dd {
+  margin: 0;
+}

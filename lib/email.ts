@@ -25,7 +25,7 @@ function layout(heading: string, body: string, footer = "") {
     </td></tr>
   </table>
   <p style="max-width:560px;margin:16px auto 0;text-align:center;font-size:12px;line-height:1.6;color:${MUTED}">
-    ${esc(site.name)}, ${esc(site.tagline.toLowerCase())}. <a href="${site.url}/shipping-and-returns" style="color:${MUTED}">Delivery and returns</a>${footer}
+    ${esc(site.name)}, ${esc(site.tagline.toLowerCase())}. <a href="${site.url}/shipping-policy" style="color:${MUTED}">Shipping</a> · <a href="${site.url}/returns-policy" style="color:${MUTED}">Returns</a> · <a href="${site.url}/contact" style="color:${MUTED}">Contact</a>${footer}
   </p></body></html>`;
 }
 

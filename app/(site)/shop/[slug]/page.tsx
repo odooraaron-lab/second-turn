@@ -252,7 +252,18 @@ export default async function ProductPage({ params, searchParams }: Props) {
               <dd>
                 {formatNzd(p.shipping_cents)}. {site.dispatchNote}
                 {site.pickup.enabled && ` Or pick up in ${site.pickup.town} for free.`}{" "}
-                <Link href="/shipping-and-returns">Delivery and returns</Link>
+                <Link href="/shipping-policy">Shipping policy</Link>
+              </dd>
+            </div>
+            <div>
+              <dt>Returns</dt>
+              <dd>
+                {site.returns.days
+                  ? `Returns accepted within ${site.returns.days} days of delivery.`
+                  : "No change-of-mind returns."}{" "}
+                Faulty, damaged or not-as-described games are put right
+                {site.returns.completenessDays > 0 ? `, and Counted complete games are guaranteed complete for ${site.returns.completenessDays} days` : ""}
+                . <Link href="/returns-policy">Returns and refunds</Link>
               </dd>
             </div>
           </dl>

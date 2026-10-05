@@ -154,7 +154,13 @@ export function Header() {
                 </li>
               ))}
               <li>
-                <Link href="/shipping-and-returns">Delivery and returns</Link>
+                <Link href="/shipping-policy">Shipping</Link>
+              </li>
+              <li>
+                <Link href="/returns-policy">Returns and refunds</Link>
+              </li>
+              <li>
+                <Link href="/contact">Contact</Link>
               </li>
             </ul>
           </section>

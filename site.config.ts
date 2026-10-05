@@ -18,7 +18,26 @@ const tradeIns = {
   enabled: false,
   note: "Got old games to sell or swap? Email us a photo of the box and what's inside and we'll make an offer.",
 };
+// Who you are, for the Contact, Terms and Privacy pages and Google. Google Ads and Merchant Center need
+// a way to contact you that's visible on the site: fill in contactEmail below at the very least.
+const business = {
+  tradingName: "Second Turn", // TODO: your business or trading name
+  location: "Whangārei, Northland, New Zealand", // town is enough; the street address isn't shown
+  phone: "", // optional, e.g. "021 123 4567"
+  gstRegistered: false, // true once you're GST registered; prices are then shown as GST inclusive
+  gstNumber: "",
+  hours: "Emails answered within one working day",
+};
+// Date the policy pages were last changed. Update it whenever you change shipping, returns or privacy wording.
+const policiesUpdated = "2026-10-05";
+
 const returns = {
+  // Cancel any time before the order is sent, for a full refund
+  cancelBeforeDispatch: true,
+  // Working days to process a refund once it's agreed (banks can take a few more days to show it)
+  refundDays: 5,
+  // Hours after delivery to report courier damage, with photos
+  damageHours: 48,
   // 0 = no change-of-mind returns (faulty, damaged or not-as-described items are still put right).
   // Set to e.g. 14 to accept returns within 14 days of delivery; the page and Google data update to match.
   days: 0,
@@ -60,7 +79,7 @@ export const site = {
   // Colour direction: "Arcade pop" (deep violet, cream, hot pink, teal). Colours live at the top of app/globals.css.
   theme: "arcade" as Theme,
 
-  contactEmail: "", // e.g. "hello@secondturn.co.nz", shown in the footer when filled in
+  contactEmail: "", // TODO: required for Google. e.g. "hello@secondturn.co.nz", shown on Contact, the footer and policies
   instagram: "",
   facebook: "",
 
@@ -70,6 +89,8 @@ export const site = {
   pickup,
   returns,
   tradeIns,
+  business,
+  policiesUpdated,
   // Days after shipping that opted-in buyers get a "how's game night going?" email with new games (needs CRON_SECRET).
   followUpDays: 21,
   dispatchNote: `Sent by tracked courier within ${shipping.handlingDays.max} working days, anywhere in New Zealand.`,

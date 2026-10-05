@@ -28,7 +28,7 @@ export function faqs() {
       a: `Most games are ${courier} by tracked courier anywhere in New Zealand; the exact price is on each game's page.${
         site.pickup.enabled ? ` Or choose free pick-up in ${site.pickup.town}.` : ""
       } Games are sent within ${site.shipping.handlingDays.max} working days.`,
-      link: { href: "/shipping-and-returns", label: "Delivery and returns" },
+      link: { href: "/shipping-policy", label: "Shipping policy" },
     },
     {
       q: "Do you trade or buy board games?",

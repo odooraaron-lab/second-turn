@@ -91,6 +91,18 @@ export function siteChecks(): Check[] {
       detail: process.env.OWNER_EMAIL ? `Sent to ${process.env.OWNER_EMAIL}.` : "Set OWNER_EMAIL to get an email for each sale.",
     },
     {
+      ok: !!site.contactEmail,
+      label: "Contact details (needed for Google Ads and Merchant Center)",
+      detail: site.contactEmail
+        ? `Shown on /contact and every policy page: ${site.contactEmail}${site.business.phone ? `, ${site.business.phone}` : ""}.`
+        : "Set contactEmail in site.config.ts. Google rejects shops with no visible way to contact them.",
+    },
+    {
+      ok: true,
+      label: "Policy pages for Google",
+      detail: `Returns: ${url}/returns-policy · Shipping: ${url}/shipping-policy · Privacy: ${url}/privacy-policy · Terms: ${url}/terms · Contact: ${url}/contact`,
+    },
+    {
       ok: true, // optional extra, so never a blocker
       warn: !process.env.CRON_SECRET,
       label: "Follow-up emails",

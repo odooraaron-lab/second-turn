@@ -59,9 +59,12 @@ export function Footer() {
             <h2>Info</h2>
             <Link href="/about">About</Link>
             <Link href="/blog">Blog</Link>
-            <Link href="/shipping-and-returns">Delivery and returns</Link>
-            <Link href="/shipping-and-returns#privacy">Privacy</Link>
-            {site.contactEmail && <a href={`mailto:${site.contactEmail}`}>Email</a>}
+            <Link href="/contact">Contact</Link>
+            <Link href="/shipping-policy">Shipping policy</Link>
+            <Link href="/returns-policy">Returns and refunds</Link>
+            <Link href="/terms">Terms of sale</Link>
+            <Link href="/privacy-policy">Privacy policy</Link>
+            {site.contactEmail && <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>}
             {site.instagram && (
               <a href={site.instagram} rel="me noopener">
                 Instagram
