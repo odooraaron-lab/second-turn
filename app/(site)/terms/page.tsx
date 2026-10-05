@@ -39,6 +39,12 @@ export default function Terms() {
         is shown on each game's page and at checkout before you pay. The price you see at checkout is the total you pay.
       </p>
 
+      <h2 id="sellers">Who sells each game</h2>
+      <p>
+        Most games are sold by {b.tradingName}. Some are listed by other players through their own accounts; we check and
+        sell those on their behalf, and the purchase, delivery and returns work exactly the same for you.
+      </p>
+
       <h2 id="buying">Buying and payment</h2>
       <p>
         Choosing <strong>Buy Now</strong> takes you to a secure checkout run by Stripe, where you can pay by card or any
@@ -65,6 +71,34 @@ export default function Terms() {
         other New Zealand consumer law. To the extent the law allows, our liability for any game is limited to the price you
         paid for it plus shipping.
       </p>
+
+      <h2 id="cards">Collector cards</h2>
+      <p>
+        Every listing is minted as a numbered collector card. Card stats (players, time, age, power ratings, rarity) are a
+        guide to the game, not a guarantee; the listing, its photos and its completeness label describe the actual item
+        you're buying. We can correct a card's stats if they're wrong, and the card page shows when that happened.
+      </p>
+
+      <h2 id="selling">Selling with an account</h2>
+      <p>If you make an account and list your own games, these terms apply to you as a seller too:</p>
+      <ul>
+        <li>You must be 18 or over, and the game must be yours to sell.</li>
+        <li>
+          Describe the game honestly: completeness, condition and anything missing. Your listing is minted as a card when
+          you save it, and the card stats lock. We review every listing before it goes in the shop and may decline or
+          remove any listing.
+        </li>
+        <li>
+          When your game sells, we email you to arrange getting it to the buyer and paying you the agreed amount. Keep the
+          game complete and safe until then. If it's no longer available, tell us straight away so the buyer can be
+          refunded.
+        </li>
+        <li>
+          Buyers are covered by our <Link href="/returns-policy">returns and refunds policy</Link>; a refund for a game that
+          wasn't as you described may be taken from what you're paid.
+        </li>
+        <li>You can withdraw a listing while it's waiting for review, and close your account by emailing us.</li>
+      </ul>
 
       <h2 id="privacy">Privacy</h2>
       <p>

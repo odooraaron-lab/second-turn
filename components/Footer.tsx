@@ -59,6 +59,8 @@ export function Footer() {
             <h2>Info</h2>
             <Link href="/about">About</Link>
             <Link href="/blog">Blog</Link>
+            <Link href="/cards">Player cards</Link>
+            <Link href="/account/signup">Sell your games</Link>
             <Link href="/contact">Contact</Link>
             <Link href="/shipping-policy">Shipping policy</Link>
             <Link href="/returns-policy">Returns and refunds</Link>

@@ -1,9 +1,11 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-import { saveListing, type SaveState } from "../actions";
 import { site } from "@/site.config";
 import type { Product } from "@/lib/products";
+import { CardStatsFields, type GameOption } from "./CardStatsFields";
+
+export type SaveState = { error: string };
 
 type Photo = { key: string; url?: string; preview?: string; blur?: string; error?: string };
 
@@ -38,8 +40,19 @@ async function prepare(file: File): Promise<{ upload: Blob; blur?: string }> {
 
 const cents = (c?: number) => (c === undefined ? "" : (c / 100).toFixed(c % 100 ? 2 : 0));
 
-export function ListingForm({ product }: { product?: Product }) {
-  const [state, action, saving] = useActionState<SaveState, FormData>(saveListing, { error: "" });
+type Props = {
+  product?: Product;
+  /** Server action that saves the listing (admin or player) */
+  save: (prev: SaveState, form: FormData) => Promise<SaveState>;
+  mode: "admin" | "player";
+  /** The Game Index, for picking a game and filling in its stats */
+  games: GameOption[];
+};
+
+/** The listing form, shared by admin and players. New listings are minted as cards when saved. */
+export function ListingForm({ product, save, mode, games }: Props) {
+  const [state, action, saving] = useActionState<SaveState, FormData>(save, { error: "" });
+  const locked = !!product?.card_no;
   const [photos, setPhotos] = useState<Photo[]>(
     (product?.images ?? []).map((url) => ({ key: url, url, blur: product?.blurs?.[url] }))
   );
@@ -68,7 +81,7 @@ export function ListingForm({ product }: { product?: Product }) {
           if (blur) update({ blur });
           const body = new FormData();
           body.append("file", upload, "photo.jpg");
-          const res = await fetch("/api/admin/upload", { method: "POST", body });
+          const res = await fetch("/api/upload", { method: "POST", body });
           const data = await res.json().catch(() => ({}));
           if (!res.ok || !data.url) throw new Error(data.error || "Upload failed. Check your connection and try again.");
           update({ url: data.url });
@@ -165,69 +178,25 @@ export function ListingForm({ product }: { product?: Product }) {
       <section className="step">
         <div className="step-head">
           <span className="num">2</span>
-          <h2>About the game</h2>
+          <h2>About this copy</h2>
         </div>
         <div className="field">
-          <label htmlFor="title">Title</label>
-          <input className="input" id="title" name="title" placeholder="Cluedo" defaultValue={product?.title} required />
-        </div>
-        <div className="field">
-          <label htmlFor="category">Category</label>
-          <select className="select" id="category" name="category" defaultValue={product?.category ?? site.categories[0].id}>
-            {site.categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <fieldset className="field choice-set">
-          <legend>Is everything in the box?</legend>
-          {site.completeness.map((c) => (
-            <label key={c.id} className="choice">
-              <input
-                type="radio"
-                name="completeness"
-                value={c.id}
-                defaultChecked={(product?.completeness ?? "complete") === c.id}
-              />
-              <span>
-                <strong>{c.label}</strong>
-                <small>{c.note}</small>
-              </span>
-            </label>
-          ))}
-        </fieldset>
-
-        <div className="field">
-          <label htmlFor="condition">Condition</label>
-          <select className="select" id="condition" name="condition" defaultValue={product?.condition ?? "good"}>
-            {site.conditions.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}: {c.note}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="field">
-          <label htmlFor="description">
-            Description <span className="optional">(needed if pieces are missing)</span>
-          </label>
-          <textarea
-            className="textarea"
-            id="description"
-            name="description"
-            placeholder="What's in the box, anything missing, box wear, which edition. Buyers love a mention of old score sheets or house rules in the lid."
-            defaultValue={product?.description}
-          />
+          <label htmlFor="title">Listing title</label>
+          <input className="input" id="title" name="title" placeholder="Cluedo, 1972 Waddingtons edition" defaultValue={product?.title} required />
         </div>
         <div className="field-row">
           <div className="field">
-            <label htmlFor="era">
-              Decade <span className="optional">(helps buyers browse)</span>
-            </label>
+            <label htmlFor="category">Category</label>
+            <select className="select" id="category" name="category" defaultValue={product?.category ?? site.categories[0].id}>
+              {site.categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="era">Decade</label>
             <select className="select" id="era" name="era" defaultValue={product?.era ?? ""}>
               <option value="">Not sure</option>
               {site.eras.map((e) => (
@@ -237,62 +206,116 @@ export function ListingForm({ product }: { product?: Product }) {
               ))}
             </select>
           </div>
-          <div className="field">
-            <label htmlFor="year">
-              Year <span className="optional">(optional)</span>
-            </label>
-            <input className="input" id="year" name="year" inputMode="numeric" placeholder="1986" defaultValue={product?.year} />
-          </div>
         </div>
-        <div className="field-row">
-          <div className="field">
-            <label htmlFor="publisher">
-              Publisher <span className="optional">(optional)</span>
-            </label>
-            <input className="input" id="publisher" name="publisher" placeholder="Waddingtons" defaultValue={product?.publisher} />
-          </div>
-          <div className="field">
-            <label htmlFor="players">
-              Players <span className="optional">(optional)</span>
-            </label>
-            <input className="input" id="players" name="players" placeholder="2 to 6 players" defaultValue={product?.players} />
-          </div>
+
+        {!locked && (
+          <>
+            <fieldset className="field choice-set">
+              <legend>Is everything in the box?</legend>
+              {site.completeness.map((c) => (
+                <label key={c.id} className="choice">
+                  <input type="radio" name="completeness" value={c.id} defaultChecked={c.id === "complete"} />
+                  <span>
+                    <strong>{c.label}</strong>
+                    <small>{c.note}</small>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+            <div className="field">
+              <label htmlFor="condition">Condition</label>
+              <select className="select" id="condition" name="condition" defaultValue="good">
+                {site.conditions.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.label}: {c.note}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
+        )}
+
+        <div className="field">
+          <label htmlFor="description">
+            Description <span className="optional">(needed if pieces are missing)</span>
+          </label>
+          <textarea
+            className="textarea"
+            id="description"
+            name="description"
+            placeholder="What's in the box, anything missing, box wear, which edition. Old score sheets or house rules in the lid are a bonus."
+            defaultValue={product?.description}
+          />
         </div>
-        <p className="hint">The copyright year is usually printed on the box bottom or the back of the rules.</p>
       </section>
 
       <section className="step">
         <div className="step-head">
           <span className="num">3</span>
+          <h2>{locked ? "Card" : "Card stats"}</h2>
+        </div>
+        {locked ? (
+          <p className="locked-note">
+            <strong>Card {product!.card_no} is minted.</strong> Its stats, condition and completeness are locked.
+            {mode === "admin" ? (
+              <>
+                {" "}
+                To correct them, use <a href={`/admin/cards?no=${product!.card_no}`}>Cards</a>.
+              </>
+            ) : (
+              " Contact us if something needs correcting."
+            )}
+          </p>
+        ) : (
+          <CardStatsFields games={games} />
+        )}
+      </section>
+
+      <section className="step">
+        <div className="step-head">
+          <span className="num">4</span>
           <h2>Price</h2>
         </div>
         <div className="field-row">
           <div className="field">
-            <label htmlFor="price">Price</label>
+            <label htmlFor="price">{mode === "player" ? "Asking price" : "Price"}</label>
             <div className="money">
               <span aria-hidden>$</span>
               <input className="input" id="price" name="price" inputMode="decimal" placeholder="25" defaultValue={cents(product?.price_cents)} required />
             </div>
           </div>
-          <div className="field">
-            <label htmlFor="shipping">Courier</label>
-            <div className="money">
-              <span aria-hidden>$</span>
-              <input
-                className="input"
-                id="shipping"
-                name="shipping"
-                inputMode="decimal"
-                defaultValue={product ? cents(product.shipping_cents) : String(site.defaultShippingNzd)}
-                required
-              />
+          {mode === "admin" && (
+            <div className="field">
+              <label htmlFor="shipping">Courier</label>
+              <div className="money">
+                <span aria-hidden>$</span>
+                <input
+                  className="input"
+                  id="shipping"
+                  name="shipping"
+                  inputMode="decimal"
+                  defaultValue={product ? cents(product.shipping_cents) : String(site.defaultShippingNzd)}
+                  required
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <p className="hint">
-          NZ dollars. Courier is added on top at checkout
-          {site.pickup.enabled ? `; buyers picking up in ${site.pickup.town} pay nothing extra` : ""}.
+          NZ dollars.{" "}
+          {mode === "player"
+            ? `Buyers pay courier on top (usually $${site.defaultShippingNzd}). Your listing is checked before it goes live.`
+            : `Courier is added on top at checkout${site.pickup.enabled ? `; buyers picking up in ${site.pickup.town} pay nothing extra` : ""}.`}
         </p>
+        {!locked && (
+          <label className="choice confirm-lock">
+            <input type="checkbox" name="confirm_lock" required />
+            <span>
+              <strong>Mint this card</strong>
+              <small>I've checked the card stats. Once minted, the card number and stats are locked for good.</small>
+            </span>
+          </label>
+        )}
       </section>
 
       {state.error && (
@@ -307,19 +330,23 @@ export function ListingForm({ product }: { product?: Product }) {
             <button className="btn" type="submit" disabled={saving || uploading}>
               {uploading ? "Waiting for photos" : saving ? "Saving" : "Save changes"}
             </button>
-            <a className="btn btn-quiet" href="/admin">
+            <a className="btn btn-quiet" href={mode === "admin" ? "/admin" : "/account"}>
               Cancel
             </a>
           </>
-        ) : (
+        ) : mode === "admin" ? (
           <>
-            <button className="btn" type="submit" name="intent" value="publish" disabled={saving || uploading}>
-              {uploading ? "Waiting for photos" : saving ? "Saving" : "Put in shop"}
+            <button className="btn btn-buy" type="submit" name="intent" value="publish" disabled={saving || uploading}>
+              {uploading ? "Waiting for photos" : saving ? "Minting" : "Mint card and put in shop"}
             </button>
             <button className="btn btn-quiet" type="submit" name="intent" value="hide" disabled={saving || uploading}>
-              Save hidden
+              Mint and save hidden
             </button>
           </>
+        ) : (
+          <button className="btn btn-buy" type="submit" disabled={saving || uploading}>
+            {uploading ? "Waiting for photos" : saving ? "Minting" : "Mint card and send for review"}
+          </button>
         )}
       </div>
     </form>

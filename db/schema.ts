@@ -3,6 +3,17 @@
 // or run: npm run db:setup
 // Tables are prefixed bg_ so they never clash with another shop's tables if a database is ever shared.
 
+/** Run after the tables and columns exist (indexes on columns that older databases gain later). */
+export const POST_SQL = [
+  "CREATE UNIQUE INDEX IF NOT EXISTS bg_products_card_no_idx ON bg_products (card_no) WHERE card_no <> ''",
+  "CREATE INDEX IF NOT EXISTS bg_products_seller_idx ON bg_products (seller_id)",
+  // Listings from before cards existed get their card number now, oldest first
+  `WITH todo AS (SELECT id FROM bg_products WHERE card_no = '' ORDER BY id)
+   UPDATE bg_products p SET card_no = 'ST-' || lpad(nextval('bg_card_seq')::text, 5, '0'),
+          minted_at = COALESCE(p.minted_at, p.created_at)
+     FROM todo WHERE p.id = todo.id`,
+];
+
 export const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS bg_products (
   id                  SERIAL PRIMARY KEY,
@@ -26,6 +37,14 @@ CREATE TABLE IF NOT EXISTS bg_products (
   reserved_until      TIMESTAMPTZ,
   reserved_session_id TEXT,
   sold_at             TIMESTAMPTZ,
+  card_no             TEXT NOT NULL DEFAULT '',
+  card                JSONB NOT NULL DEFAULT '{}'::jsonb,
+  minted_at           TIMESTAMPTZ,
+  card_edited_at      TIMESTAMPTZ,
+  card_edit_note      TEXT NOT NULL DEFAULT '',
+  game_id             INTEGER,
+  seller_id           INTEGER,
+  review              TEXT NOT NULL DEFAULT 'approved',
   created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -55,6 +74,43 @@ CREATE TABLE IF NOT EXISTS bg_orders (
 );
 
 CREATE INDEX IF NOT EXISTS bg_orders_created_idx ON bg_orders (created_at DESC);
+
+-- Card numbers: every listing is minted as card ST-00001, ST-00002 ...
+CREATE SEQUENCE IF NOT EXISTS bg_card_seq;
+
+-- Player accounts (people who list their own games). Passwords are stored as scrypt hashes, never as text.
+CREATE TABLE IF NOT EXISTS bg_users (
+  id            SERIAL PRIMARY KEY,
+  username      TEXT UNIQUE NOT NULL,
+  email         TEXT NOT NULL DEFAULT '',
+  password_hash TEXT NOT NULL,
+  disabled      BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- The Game Index: one card per game title (G-0001 ...), with the facts and stats a new listing starts from.
+CREATE TABLE IF NOT EXISTS bg_games (
+  id           SERIAL PRIMARY KEY,
+  game_no      TEXT UNIQUE NOT NULL,
+  slug         TEXT UNIQUE NOT NULL,
+  name         TEXT NOT NULL,
+  year         TEXT NOT NULL DEFAULT '',
+  designer     TEXT NOT NULL DEFAULT '',
+  publisher    TEXT NOT NULL DEFAULT '',
+  min_players  INTEGER NOT NULL DEFAULT 2,
+  max_players  INTEGER NOT NULL DEFAULT 4,
+  play_minutes INTEGER NOT NULL DEFAULT 30,
+  min_age      INTEGER NOT NULL DEFAULT 8,
+  kind         TEXT NOT NULL DEFAULT 'Family',
+  mechanics    TEXT NOT NULL DEFAULT '',
+  strategy     INTEGER NOT NULL DEFAULT 5,
+  luck         INTEGER NOT NULL DEFAULT 5,
+  social       INTEGER NOT NULL DEFAULT 5,
+  speed        INTEGER NOT NULL DEFAULT 5,
+  blurb        TEXT NOT NULL DEFAULT '',
+  edited_at    TIMESTAMPTZ,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 
 -- People who unsubscribed from follow-up emails
 CREATE TABLE IF NOT EXISTS bg_email_optouts (

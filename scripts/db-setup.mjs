@@ -10,10 +10,11 @@ if (!process.env.DATABASE_URL) {
 
 const sql = neon(process.env.DATABASE_URL);
 const file = readFileSync(new URL("../db/schema.ts", import.meta.url), "utf8");
-const schema = file.slice(file.indexOf("`") + 1, file.lastIndexOf("`"))
+const start = file.indexOf("export const SCHEMA_SQL = `") + "export const SCHEMA_SQL = `".length;
+const schema = file.slice(start, file.indexOf("`", start))
   .split("\n").filter((l) => !l.trim().startsWith("--")).join("\n");
 
 for (const statement of schema.split(";").map((s) => s.trim()).filter(Boolean)) {
   await sql.query(statement);
 }
-console.log("Tables ready: bg_products, bg_orders, bg_email_optouts");
+console.log("Tables ready. The site adds the Game Index and card numbers on its first visit.");

@@ -47,17 +47,29 @@ Redeploy after adding variables. See `.env.example` for the full list.
 With Stripe test keys, list a game in `/admin`, then buy it with card `4242 4242 4242 4242`, any future expiry and any CVC. Try it once with courier and once with pick-up. It should turn Sold and appear in `/admin/orders`.
 
 ## Collector cards
-Every listing is shown as a collector card, ported from the Property Wars trading card: yellow bevelled border, face tinted by rarity, holo shine on rare cards, the price as a hanging tag, condition as orbs, the year as the big number, and a card number (No. 0012). There's nothing extra to fill in: the card is made from the listing the moment it's saved, and shown at the top of the game's edit page in admin.
+Every listing is a numbered collector card in the shop's own catalogue.
 
-Rarity is worked out automatically (`lib/collector.ts`): counted complete, better condition and older games score higher.
-- **Common**, **Uncommon**, **Rare** (holo) and **Vintage** (holo) by score
-- **Sealed** games always get the gold Sealed frame
-- Spare parts are always Common
+- **Minting.** When a listing is first saved (by admin or a player), it's minted: it gets the next card number (`ST-00001`, `ST-00002` ...) and a snapshot of its stats. Listings from before cards existed were given numbers automatically, oldest first.
+- **Locked stats.** Players, playing time, age, year, designer, publisher, type, how it plays, edition, the four power stats (Strategy, Luck, Social, Speed, out of 10), condition, completeness, decade and rarity. Sellers can't change them after minting. The listing's photos, title, description and price can still be edited by admin.
+- **Admin card editor.** **Admin > Cards**: type any card number to see every stat and change it. Each change needs a short note, and the card keeps the date and note on its record (shown on the card's page as "corrected by the shop").
+- **Rarity** is worked out at minting from completeness, condition and age (`lib/collector.ts`) and locked; admin can override it.
+- **Game Index.** 100 reference cards (`G-0001` ...) for games that commonly turn up second hand in NZ, loaded on the first visit from `content/games-seed.ts`. When listing, pick the game and its stats fill in; adjust anything different about that copy. A game that isn't in the index is added automatically the first time someone lists it. Edit index cards in Admin > Cards too.
+- **Player cards tab** `/cards`: every card for sale, sold cards, and the Game Index, with search. Each card has its own page at `/cards/ST-00012` or `/cards/G-0002`, which Google can index.
 
-Card styles: `app/collector-card.css`. Card layout: `components/CollectorCard.tsx`.
+The Game Index facts come from the games' own boxes and rules. The power stats are the shop's own ratings.
+
+### Where game data can come from
+- **BoardGameGeek** has the biggest database (ratings, complexity, mechanics), but since July 2025 its XML API needs a registered application and token, commercial use needs a commercial licence, and public apps must show the "Powered by BGG" logo. Worth applying for if you want ratings on cards; until then the site doesn't use BGG data.
+- **Wikidata** has many board games with player counts, designers and publishers, and its data is public domain (CC0), so it's safe for commercial use.
+- Copying from the box is always allowed, which is what the starter index does.
+
+## Player accounts
+Anyone can make an account at `/account/signup` with a username, email and password (hashed with scrypt; never stored as text). Logged in, they can list games at `/account/list`; each listing is minted as a card straight away and waits for review. **Admin > Listings** shows a "Player listings to review" box: approve to put it in the shop, or decline.
+
+When a player's game sells, the player gets an email and your sale alert says who listed it. **You arrange collecting the game and paying the player yourself** (the shop takes payment through your Stripe). The seller terms on `/terms#selling` say so. If you later want sellers paid automatically, that needs Stripe Connect, which is a bigger change.
 
 ## Listing a game
-Admin asks for photos (box front, box back, everything laid out), title, category, **is everything in the box?**, condition, description, decade, year, publisher and players.
+The form asks for photos (box front, box back, everything laid out), title, category, decade, **is everything in the box?**, condition, description, then the card stats (pick the game from the Game Index to fill them in), and price. A tick box confirms the stats before the card is minted.
 
 - **Counted complete**: every piece counted against the rules. Shown with a green tick.
 - **Missing pieces**: counted, and the description must say what's missing (admin won't save without it).

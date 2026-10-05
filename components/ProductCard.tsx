@@ -1,4 +1,5 @@
 import { CollectorCard } from "./CollectorCard";
+import { viewFromProduct } from "@/lib/card-view";
 import { formatNzd } from "@/lib/format";
 import { publicStatus, type Product } from "@/lib/products";
 import { completenessOf } from "@/site.config";
@@ -49,7 +50,7 @@ export function CompleteLine({ product }: { product: Pick<Product, "completeness
 export function ProductCard({ product, eager, lcp }: { product: Product; eager?: boolean; lcp?: boolean }) {
   const status = publicStatus(product);
   return (
-    <CollectorCard product={product} eager={eager} lcp={lcp} href={`/shop/${product.slug}`}>
+    <CollectorCard view={viewFromProduct(product)} eager={eager} lcp={lcp} href={`/shop/${product.slug}`}>
       {status === "available" && (
         <form action="/api/checkout" method="post" className="card-buy">
           <input type="hidden" name="slug" value={product.slug} />

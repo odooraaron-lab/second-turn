@@ -2,7 +2,6 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { del } from "@vercel/blob";
 import { sql } from "@/lib/db";
 import { requireAdmin, checkCredentials, startSession, endSession } from "@/lib/auth";
 import { getProductById, listAllProducts } from "@/lib/products";
@@ -10,15 +9,13 @@ import { trySyncToStripe, archiveInStripe } from "@/lib/stripe-sync";
 import { ensureSchema } from "@/lib/db";
 import { getOrder } from "@/lib/orders";
 import { sendShippedEmail } from "@/lib/email";
-import { slugify, toCents } from "@/lib/format";
+import { saveListingCore, deleteBlobs } from "@/lib/listings";
+import { readCardFields, getGame, updateGame, getProductByCardNo, editMintedCard, statsOf } from "@/lib/cards";
+import { rarityOf } from "@/lib/collector";
 import { site } from "@/site.config";
 
 const refresh = () => revalidatePath("/", "layout");
 
-async function deleteBlobs(urls: string[]) {
-  if (!urls.length || !process.env.BLOB_READ_WRITE_TOKEN) return;
-  await del(urls).catch((e) => console.error("Photo cleanup failed", e));
-}
 
 // ---------- Session ----------
 
@@ -43,83 +40,61 @@ export type SaveState = { error: string };
 
 export async function saveListing(_prev: SaveState, formData: FormData): Promise<SaveState> {
   await requireAdmin();
+  const result = await saveListingCore(formData, { by: "admin" });
+  if ("error" in result) return result;
+  const synced = await trySyncToStripe(await getProductById(result.id));
+  refresh();
+  const title = String(formData.get("title") ?? "");
+  const minted = result.created && result.cardNo ? `&minted=${result.cardNo}` : "";
+  redirect(`/admin?saved=${encodeURIComponent(title)}${minted}${synced || !process.env.STRIPE_SECRET_KEY ? "" : "&stripe=failed"}`);
+}
 
-  const id = Number(formData.get("id") || 0);
-  const text = (name: string) => String(formData.get(name) ?? "").trim();
+// ---------- Player listings ----------
+
+export async function reviewListing(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  const approve = formData.get("decision") === "approve";
+  await sql()`UPDATE bg_products SET review = ${approve ? "approved" : "rejected"}, visible = ${approve}, updated_at = now()
+              WHERE id = ${id} AND seller_id IS NOT NULL`;
+  await trySyncToStripe(await getProductById(id));
+  refresh();
+}
+
+// ---------- Card editor ----------
+
+export type CardEditState = { error: string; saved?: string };
+
+export async function saveCardStats(_prev: CardEditState, formData: FormData): Promise<CardEditState> {
+  await requireAdmin();
+  const no = String(formData.get("card_no") ?? "").trim().toUpperCase();
+  const note = String(formData.get("note") ?? "").trim();
+  const fields = readCardFields(formData);
   const pick = (name: string, list: { id: string }[], fallback: string) => {
-    const v = text(name);
+    const v = String(formData.get(name) ?? "");
     return list.some((x) => x.id === v) ? v : fallback;
   };
-  const title = text("title");
-  const description = text("description");
-  const category = text("category");
-  const era = pick("era", site.eras, "");
-  const condition = pick("condition", site.conditions, "good");
-  const completeness = pick("completeness", site.completeness, "not-counted");
-  const publisher = text("publisher");
-  const players = text("players");
-  const year = text("year");
-  const price = toCents(formData.get("price"));
-  const shipping = toCents(formData.get("shipping"));
-  const intent = String(formData.get("intent") ?? "");
-  let images: string[] = [];
-  try {
-    images = (JSON.parse(String(formData.get("images") ?? "[]")) as unknown[]).filter(
-      (u): u is string => typeof u === "string" && u.startsWith("https://")
-    );
-  } catch {
-    /* handled below */
+
+  if (no.startsWith("G-")) {
+    const game = await getGame(no);
+    if (!game) return { error: `No Game Index card ${no}.` };
+    await updateGame(no, { ...fields, game: fields.game || game.name }, String(formData.get("blurb") ?? ""));
+    refresh();
+    return { error: "", saved: `${no} saved.` };
   }
 
-  let blurs: Record<string, string> = {};
-  try {
-    const raw = JSON.parse(String(formData.get("blurs") ?? "{}")) as Record<string, unknown>;
-    // Keep only previews for photos still on the listing, and only small data URLs.
-    for (const url of images) {
-      const b = raw[url];
-      if (typeof b === "string" && b.startsWith("data:image/") && b.length < 3000) blurs[url] = b;
-    }
-  } catch {
-    blurs = {};
-  }
-
-  if (!title) return { error: "Add a title." };
-  if (!images.length) return { error: "Add at least one photo." };
-  if (!Number.isFinite(price) || price < 50) return { error: "Enter a price of at least $0.50." };
-  if (!Number.isFinite(shipping) || shipping < 0) return { error: "Enter a courier cost (0 for free)." };
-  if (!site.categories.some((c) => c.id === category)) return { error: "Choose a category." };
-  if (completeness === "missing" && !description)
-    return { error: "List what's missing in the description, so buyers know exactly what they're getting." };
-
-  const imagesJson = JSON.stringify(images);
-  const blursJson = JSON.stringify(blurs);
-  await ensureSchema();
-
-  let savedId = id;
-  if (id) {
-    const existing = await getProductById(id);
-    if (!existing) return { error: "This listing no longer exists." };
-    await sql()`UPDATE bg_products SET
-        title = ${title}, description = ${description}, category = ${category}, era = ${era}, publisher = ${publisher},
-        players = ${players}, year = ${year}, condition = ${condition}, completeness = ${completeness},
-        price_cents = ${price}, shipping_cents = ${shipping},
-        images = ${imagesJson}::jsonb, blurs = ${blursJson}::jsonb, updated_at = now()
-      WHERE id = ${id}`;
-    await deleteBlobs(existing.images.filter((u) => !images.includes(u)));
-  } else {
-    const slug = `${slugify(title)}-${Math.random().toString(36).slice(2, 6)}`;
-    const rows = (await sql()`INSERT INTO bg_products
-        (slug, title, description, category, era, publisher, players, year, condition, completeness,
-         price_cents, shipping_cents, images, blurs, visible)
-      VALUES (${slug}, ${title}, ${description}, ${category}, ${era}, ${publisher}, ${players}, ${year}, ${condition},
-              ${completeness}, ${price}, ${shipping}, ${imagesJson}::jsonb, ${blursJson}::jsonb, ${intent !== "hide"})
-      RETURNING id`) as { id: number }[];
-    savedId = rows[0].id;
-  }
-
-  const synced = await trySyncToStripe(await getProductById(savedId));
+  const product = await getProductByCardNo(no);
+  if (!product) return { error: `No card ${no}.` };
+  if (!note) return { error: "Add a short note saying why the stats changed. It's kept on the card's record." };
+  const before = statsOf(product);
+  const condition = pick("condition", site.conditions, before.condition);
+  const completeness = pick("completeness", site.completeness, before.completeness);
+  const era = pick("era", site.eras, before.era);
+  const rarity = String(formData.get("rarity") ?? "") || rarityOf({ condition, completeness, era, category: product.category });
+  await editMintedCard(no, { ...before, ...fields, game: fields.game || before.game, gameNo: before.gameNo, condition, completeness, era, rarity }, note);
+  await trySyncToStripe(await getProductById(product.id));
   refresh();
-  redirect(`/admin?saved=${encodeURIComponent(title)}${synced || !process.env.STRIPE_SECRET_KEY ? "" : "&stripe=failed"}`);
+  return { error: "", saved: `${no} saved.` };
 }
 
 export async function setSold(formData: FormData) {

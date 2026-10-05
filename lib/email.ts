@@ -4,6 +4,7 @@ import { formatNzd } from "./format";
 import { addressLines, type Order } from "./orders";
 import { getProductById, listPublicProducts, type Product } from "./products";
 import { unsubscribeUrl } from "./unsubscribe";
+import { getUserById } from "./users";
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -130,6 +131,21 @@ export async function sendOrderEmails(o: Order) {
     replyTo: owner || undefined,
   });
 
+  const seller = bought?.seller_id ? await getUserById(bought.seller_id).catch(() => null) : null;
+  if (seller?.email) {
+    await send({
+      to: seller.email,
+      subject: `Your card ${bought?.card_no ?? ""} sold: ${o.product_title}`,
+      html: layout(
+        "Your game sold",
+        `<p>Hi ${esc(seller.username)},</p>
+         <p><strong>${esc(o.product_title)}</strong> (card ${esc(bought?.card_no ?? "")}) has just sold for ${formatNzd(o.amount_total - o.shipping_amount)}.</p>
+         <p>We'll be in touch shortly to arrange getting the game to the buyer and paying you. Please keep it safe and complete until then.</p>`
+      ),
+      replyTo: owner || undefined,
+    });
+  }
+
   await send({
     to: owner,
     subject: `${isPickup(o) ? "Sold (pick-up)" : "Sold"}: ${o.product_title} (${formatNzd(o.amount_total)})`,
@@ -137,6 +153,7 @@ export async function sendOrderEmails(o: Order) {
       isPickup(o) ? "Sold: arrange a pick-up" : "You made a sale",
       `<p><strong>${esc(o.product_title)}</strong> has sold and is now marked Sold on the site.</p>
        ${isPickup(o) ? `<p style="padding:10px 12px;background:#dff8f2;border-radius:6px">The buyer is picking up in ${esc(site.pickup.town)}. Get in touch to arrange a time.</p>` : ""}
+       ${seller ? `<p style="padding:10px 12px;background:#fdecf2;border-radius:6px">Player listing from <strong>@${esc(seller.username)}</strong> (${esc(seller.email)}). They've been emailed; arrange collection of the game and their payout.</p>` : ""}
        <p><strong>Buyer</strong><br>${esc(o.customer_name)}<br>${esc(o.customer_email)}${o.customer_phone ? `<br>${esc(o.customer_phone)}` : ""}</p>
        ${summary(o)}
        <p style="margin-top:24px"><a href="${site.url}/admin/orders" style="color:${INK}">Open orders in admin</a> to ${

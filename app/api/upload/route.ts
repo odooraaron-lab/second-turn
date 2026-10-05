@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { isAdmin } from "@/lib/auth";
+import { currentUser } from "@/lib/users";
 
 const MAX_BYTES = 4 * 1024 * 1024; // photos are resized in the browser first, so this is generous
 
 export async function POST(req: NextRequest) {
-  if (!(await isAdmin())) return NextResponse.json({ error: "Please log in again." }, { status: 401 });
+  // Admin, or a logged-in player listing their own game
+  if (!(await isAdmin()) && !(await currentUser())) return NextResponse.json({ error: "Please log in again." }, { status: 401 });
 
   const form = await req.formData();
   const file = form.get("file");

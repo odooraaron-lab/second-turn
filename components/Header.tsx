@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import { site } from "@/site.config";
 
 const pages = [
+  { href: "/cards", label: "Player cards" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
+  { href: "/account", label: "Sell a game" },
 ];
 
 function Chevron() {
@@ -77,8 +79,8 @@ export function Header() {
         </nav>
 
         <div className="header-mobile">
-          <Link href="/shop" className="nav-link" aria-current={inShop ? "page" : undefined}>
-            Shop
+          <Link href="/cards" className="nav-link" aria-current={path.startsWith("/cards") ? "page" : undefined}>
+            Cards
           </Link>
           <button
             type="button"

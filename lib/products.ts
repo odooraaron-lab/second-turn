@@ -30,6 +30,18 @@ export type Product = {
   reserved_until: string | null;
   reserved_session_id: string | null;
   sold_at: string | null;
+  /** Card number, e.g. ST-00012. Given once, when the listing is first saved, and never changes. */
+  card_no: string;
+  /** Locked card stats (see lib/cards.ts) */
+  card: Record<string, unknown>;
+  minted_at: string | null;
+  card_edited_at: string | null;
+  card_edit_note: string;
+  game_id: number | null;
+  /** The player who listed it, or null for the shop's own games */
+  seller_id: number | null;
+  /** Player listings wait for approval: pending, approved or rejected */
+  review: string;
   created_at: string;
   updated_at: string;
 };

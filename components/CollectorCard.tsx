@@ -1,184 +1,191 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product } from "@/lib/products";
-import { cardFor } from "@/lib/collector";
+import type { CardView } from "@/lib/card-view";
 import { TiltCard } from "./TiltCard";
 
-/* A listing as a collector card, ported from the Property Wars trading card:
-   bevelled yellow border, face tinted by rarity, art window in a metal frame (holo on Rare and up),
-   info strip, ability box, condition orbs with the year as the big number, a stat row,
-   flavour text, and the card number. The price hangs off the edge as a tag.
-   Styles: app/collector-card.css */
+/* A collector card. Same skin as the Property Wars trading card (bevelled border, rarity-tinted face,
+   holo shine on rare cards, hanging price tag), laid out with room to breathe:
+     card number and rarity / name / year and publisher / art / players-time-age /
+     four power bars / completeness and condition / designer and how it plays
+   Works for minted listings (ST-) and Game Index cards (G-). Styles: app/collector-card.css */
 
-const ICON = {
-  players: "M6 7a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM1.5 15c0-3 2-5 4.5-5s4.5 2 4.5 5M12.5 7a2 2 0 1 0 0-4M13 10c2 .4 3.5 2.2 3.5 5",
-  year: "M3 4h12v11H3zM3 8h12M7 2v4M11 2v4",
-  publisher: "M3 3h9l3 3v9H3zM6 9h6M6 12h4",
-};
-const Icon = ({ d }: { d: string }) => (
-  <svg viewBox="0 0 18 18" width="9" height="9" aria-hidden="true">
-    <path d={d} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
-  </svg>
-);
+const POWER: { key: keyof CardView["power"]; label: string }[] = [
+  { key: "strategy", label: "Strategy" },
+  { key: "luck", label: "Luck" },
+  { key: "social", label: "Social" },
+  { key: "speed", label: "Speed" },
+];
+
+function hue(seed: string) {
+  let h = 0;
+  for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return h % 360;
+}
+
+/** Box-lid style art for cards without a photo (the Game Index) */
+function GeneratedArt({ seed, title, kind }: { seed: string; title: string; kind: string }) {
+  const h = hue(seed);
+  const initials = title
+    .replace(/[^A-Za-z0-9 ]/g, "")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+  return (
+    <span className="pc-gen" style={{ "--h": h } as React.CSSProperties} aria-hidden="true">
+      <span className="pc-gen-initials">{initials || "?"}</span>
+      <span className="pc-gen-kind">{kind}</span>
+    </span>
+  );
+}
 
 export function CollectorCard({
-  product,
+  view: v,
+  href,
   eager,
   lcp,
-  href,
   children,
 }: {
-  product: Product;
+  view: CardView;
+  href?: string;
   eager?: boolean;
   lcp?: boolean;
-  /** Leave out for a card that isn't a link (e.g. the admin preview) */
-  href?: string;
   children?: React.ReactNode;
 }) {
-  const c = cardFor(product);
-  const sold = c.status === "sold";
-  const icons = [ICON.players, ICON.year, ICON.publisher];
-
+  const sold = v.status === "sold";
   const face = (
     <div className="pc-face">
-      <header className="pc-head">
-        <span className="pc-stage">{c.stage}</span>
-        <h3 className="pc-name" title={c.title}>
-          {c.title}
-        </h3>
-        <span className="pc-hp">
-          {sold && <b>{c.price}</b>}
-          <i className="pc-orb" title={c.rarity} style={{ background: c.frame.orb, color: c.frame.orbInk }}>
-            {c.frame.mark}
-          </i>
+      <header className="pc-top">
+        <span className="pc-no">{v.no}</span>
+        <span className="pc-rare" style={{ background: v.frame.orb, color: v.frame.orbInk }}>
+          {v.frame.mark} {v.rarity}
         </span>
       </header>
 
+      <h3 className="pc-name">{v.title}</h3>
+      <p className="pc-sub">
+        <span className="pc-stage">{v.stage}</span>
+        {v.sub && <span>{v.sub}</span>}
+      </p>
+
       <div className="pc-art">
         <div className="pc-art-inner">
-          {c.image ? (
+          {v.image ? (
             <Image
-              src={c.image}
+              src={v.image}
               alt=""
               fill
-              sizes="(min-width: 720px) 220px, 46vw"
+              sizes="(min-width: 720px) 300px, 90vw"
               loading={eager ? "eager" : "lazy"}
               fetchPriority={lcp ? "high" : undefined}
-              placeholder={c.blur ? "blur" : "empty"}
-              blurDataURL={c.blur}
+              placeholder={v.blur ? "blur" : "empty"}
+              blurDataURL={v.blur}
               draggable={false}
             />
           ) : (
-            <span className="pc-art-blank" aria-hidden="true">
-              ⚀
+            <GeneratedArt seed={v.artSeed} title={v.title} kind={v.kind} />
+          )}
+          {v.holo && <span className="pc-art-holo" aria-hidden="true" />}
+          {sold && <span className="pc-stamp">SOLD</span>}
+          {v.status === "reserved" && <span className="pc-stamp pc-stamp-hold">ON HOLD</span>}
+          {v.status === "pending" && <span className="pc-stamp pc-stamp-hold">IN REVIEW</span>}
+          {v.fresh && <span className="pc-stamp pc-stamp-new">JUST IN</span>}
+        </div>
+      </div>
+
+      <dl className="pc-facts">
+        <div>
+          <dt>Players</dt>
+          <dd>{v.players}</dd>
+        </div>
+        <div>
+          <dt>Time</dt>
+          <dd>{v.minutes}</dd>
+        </div>
+        <div>
+          <dt>Age</dt>
+          <dd>{v.age}</dd>
+        </div>
+      </dl>
+
+      <ul className="pc-power" aria-label="Card power, out of 10">
+        {POWER.map((p) => (
+          <li key={p.key}>
+            <span className="pc-power-label">{p.label}</span>
+            <span className="pc-bar" aria-hidden="true">
+              <i style={{ width: `${v.power[p.key] * 10}%`, background: v.frame.orb }} />
+            </span>
+            <b>{v.power[p.key]}</b>
+          </li>
+        ))}
+      </ul>
+
+      {(v.completeness || v.condition) && (
+        <div className="pc-traits">
+          {v.completeness && <span className={`pc-complete is-${v.completeness.id}`}>{v.completeness.label}</span>}
+          {v.condition && (
+            <span className="pc-cond" aria-label={`Condition ${v.condition.label}, ${v.condition.orbs} of 4`}>
+              <span className="pc-orbs" aria-hidden="true">
+                {[0, 1, 2, 3].map((i) => (
+                  <i key={i} style={i < v.condition!.orbs ? { background: v.frame.orb } : undefined} />
+                ))}
+              </span>
+              {v.condition.label}
             </span>
           )}
-          {c.holo && <span className="pc-art-holo" aria-hidden="true" />}
-          {sold && <span className="pc-stamp">SOLD</span>}
-          {c.status === "reserved" && <span className="pc-stamp pc-stamp-hold">ON HOLD</span>}
-          {c.fresh && <span className="pc-stamp pc-stamp-new">JUST IN</span>}
         </div>
-      </div>
+      )}
 
-      <p className="pc-strip">
-        {c.strip.length ? (
-          c.strip.map((s, i) => (
-            <span key={i}>
-              <Icon d={icons[i] ?? ICON.publisher} />
-              {s}
-            </span>
-          ))
-        ) : (
-          <span>Board game</span>
-        )}
-      </p>
-
-      <div className="pc-body">
-        <div className="pc-ability">
+      <footer className="pc-foot">
+        {v.mechanics && (
           <p>
-            <b className={`pc-ability-tag${c.ability.kind === "Trait" ? " is-trait" : ""}`}>{c.ability.kind}</b>
-            <b className="pc-ability-name">{c.ability.name}</b>
-          </p>
-          <p className="pc-ability-text">{c.ability.text}</p>
-        </div>
-
-        <div className="pc-move">
-          <span className="pc-orbs" aria-label={`Condition ${c.orbs} of 4`}>
-            {[0, 1, 2, 3].map((i) => (
-              <i
-                key={i}
-                className={i < c.orbs ? "is-on" : ""}
-                style={i < c.orbs ? { background: c.frame.orb, color: c.frame.orbInk } : undefined}
-              >
-                {i < c.orbs ? "★" : ""}
-              </i>
-            ))}
-          </span>
-          <div className="pc-move-body">
-            <b>{c.moveLabel}</b>
-            {c.moveNote && <small>{c.moveNote}</small>}
-          </div>
-          {c.moveValue && <span className="pc-dmg">{c.moveValue}</span>}
-        </div>
-
-        <div className="pc-foot">
-          {c.stats.map((s, i) => (
-            <div key={s.label} className={i === 1 ? "is-hero" : ""}>
-              <span>{s.label}</span>
-              <b>{s.value}</b>
-            </div>
-          ))}
-        </div>
-
-        {c.flavour && (
-          <p className="pc-flavour">
-            <span>{c.flavour}</span>
+            <span>Plays</span> {v.mechanics}
           </p>
         )}
-
-        <footer className="pc-credit">
-          <span className="pc-illus">{c.credit}</span>
-          <span className="pc-no">
-            {c.number} <b style={{ color: c.frame.orb }}>{c.frame.mark}</b>
-          </span>
-        </footer>
-      </div>
+        {v.designer && (
+          <p>
+            <span>By</span> {v.designer}
+          </p>
+        )}
+        {v.line && <p className="pc-line">{v.line}</p>}
+      </footer>
     </div>
   );
 
   return (
-    <div className={`pc-wrap${sold ? " is-sold" : ""} r-${c.rarity.toLowerCase()}`} style={{ "--accent": c.frame.orb } as React.CSSProperties}>
+    <div className={`pc-wrap${sold ? " is-sold" : ""} r-${v.rarity.toLowerCase()}`} style={{ "--accent": v.frame.orb } as React.CSSProperties}>
       <TiltCard
-        className={`pc${c.holo ? " is-holo" : ""}${c.rarity === "Sealed" ? " is-gold" : ""}${sold ? " is-sold" : ""}`}
+        className={`pc${v.holo ? " is-holo" : ""}${v.rarity === "Sealed" ? " is-gold" : ""}${sold ? " is-sold" : ""}`}
         style={
           {
-            "--face1": c.frame.face1,
-            "--face2": c.frame.face2,
-            "--ink": c.frame.ink,
-            "--orb": c.frame.orb,
-            "--orb-ink": c.frame.orbInk,
+            "--face1": v.frame.face1,
+            "--face2": v.frame.face2,
+            "--ink": v.frame.ink,
+            "--orb": v.frame.orb,
           } as React.CSSProperties
         }
       >
         {href ? (
-          <Link href={href} className="pc-link" aria-label={`${c.title}, ${c.rarity.toLowerCase()} card, ${c.price}${sold ? ", sold" : ""}`}>
+          <Link
+            href={href}
+            className="pc-link"
+            aria-label={`${v.title}, card ${v.no}, ${v.rarity}${v.price ? `, ${v.price}` : ""}${sold ? ", sold" : ""}`}
+          >
             {face}
           </Link>
         ) : (
           face
         )}
-        {!sold && (
-          <span className={`pc-tag${c.rarity === "Sealed" ? " is-gold" : ""}`} aria-hidden="true">
-            {c.status === "reserved" && <small>on hold</small>}
-            <b>{c.price}</b>
+        {v.price && !sold && v.status !== "pending" && (
+          <span className={`pc-tag${v.rarity === "Sealed" ? " is-gold" : ""}`} aria-hidden="true">
+            {v.status === "reserved" && <small>on hold</small>}
+            <b>{v.price}</b>
           </span>
         )}
         <span className="pc-glare" aria-hidden="true" />
       </TiltCard>
-      <p className="pc-rarity">
-        <i style={{ background: c.frame.orb }} aria-hidden="true" />
-        {c.rarity}
-      </p>
       {children && <div className="pc-action">{children}</div>}
     </div>
   );

@@ -120,6 +120,26 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="wrap section" aria-labelledby="cards-promo">
+        <div className="checked cards-promo">
+          <div className="checked-head">
+            <h2 id="cards-promo">Every game is a collector card</h2>
+            <p>
+              Each listing is minted with its own card number and locked stats: players, time, age and power ratings for
+              strategy, luck, social and speed. Browse them all, or make an account and list your own games.
+            </p>
+          </div>
+          <div className="hero-actions">
+            <Link href="/cards" className="btn btn-buy">
+              See the player cards
+            </Link>
+            <Link href="/account/signup" className="btn btn-quiet">
+              Sell your games
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="band band-tint" aria-labelledby="blog">
         <div className="wrap">
           <div className="section-head">

@@ -2,11 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { getProductById, publicStatus } from "@/lib/products";
-import { ListingForm } from "../../ListingForm";
+import { ListingForm } from "@/components/listing/ListingForm";
+import { saveListing } from "../../../actions";
 import { setSold, setVisible, deleteListing } from "../../../actions";
 import { ConfirmButton } from "../../ConfirmButton";
 import { CollectorCard } from "@/components/CollectorCard";
-import { rarityOf } from "@/lib/collector";
+import { viewFromProduct } from "@/lib/card-view";
 
 export const metadata = { title: "Edit game" };
 
@@ -68,16 +69,17 @@ export default async function EditListing({ params }: Props) {
 
       <section className="admin-card-preview" aria-labelledby="card-preview">
         <div>
-          <h2 id="card-preview">Its collector card</h2>
+          <h2 id="card-preview">Card {product.card_no}</h2>
           <p className="hint">
-            Made automatically from the listing. Rarity is {rarityOf(product)}: counted complete, better condition and
-            older games score higher. Save changes to update it.
+            Minted {product.minted_at ? new Date(product.minted_at).toLocaleDateString("en-NZ") : ""}. Its stats are locked.{" "}
+            <Link href={`/admin/cards?no=${product.card_no}`}>Edit card stats</Link>
+            {product.card_edited_at ? ` (last changed ${new Date(product.card_edited_at).toLocaleDateString("en-NZ")}: ${product.card_edit_note})` : ""}
           </p>
         </div>
-        <CollectorCard product={product} />
+        <CollectorCard view={viewFromProduct(product)} />
       </section>
 
-      <ListingForm product={product} />
+      <ListingForm product={product} save={saveListing} mode="admin" games={[]} />
 
       <div className="danger-zone">
         <p className="hint">Deleting removes the game and its photos for good. To keep a record, take it down instead.</p>

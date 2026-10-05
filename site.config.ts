@@ -29,7 +29,7 @@ const business = {
   hours: "Emails answered within one working day",
 };
 // Date the policy pages were last changed. Update it whenever you change shipping, returns or privacy wording.
-const policiesUpdated = "2026-10-05";
+const policiesUpdated = "2026-10-06";
 
 const returns = {
   // Cancel any time before the order is sent, for a full refund

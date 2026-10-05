@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
-import { ListingForm } from "../../ListingForm";
+import { ListingForm } from "@/components/listing/ListingForm";
+import { saveListing } from "../../../actions";
+import { gameOptions } from "@/lib/game-options";
 
 export const metadata = { title: "List a game" };
 
@@ -13,8 +15,9 @@ export default async function NewListing() {
       </Link>
       <div className="admin-title">
         <h1>List a game</h1>
+        <p className="hint">Saving mints its collector card: a card number and stats that are locked from then on.</p>
       </div>
-      <ListingForm />
+      <ListingForm save={saveListing} mode="admin" games={await gameOptions()} />
     </>
   );
 }

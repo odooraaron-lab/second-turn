@@ -46,8 +46,8 @@ export async function isAdmin() {
   const token = (await cookies()).get(COOKIE)?.value;
   if (!token) return false;
   try {
-    await jwtVerify(token, secret());
-    return true;
+    const { payload } = await jwtVerify(token, secret());
+    return payload.role === "admin"; // player sessions are signed with the same secret, so check the role
   } catch {
     return false;
   }

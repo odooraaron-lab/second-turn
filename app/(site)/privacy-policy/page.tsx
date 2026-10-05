@@ -27,6 +27,11 @@ export default function PrivacyPolicy() {
           website and we never see or store it.
         </li>
         <li>
+          <strong>If you make an account:</strong> your username, email address and a scrambled (hashed) version of your
+          password, which can't be turned back into the password. Plus the games you list, their photos and card stats.
+          Your username appears on your cards; your email is never shown.
+        </li>
+        <li>
           <strong>When you email us:</strong> your email address and whatever you choose to tell us.
         </li>
         <li>
@@ -71,15 +76,16 @@ export default function PrivacyPolicy() {
 
       <h2 id="cookies">Cookies</h2>
       <p>
-        This site uses only essential cookies: one that briefly holds a game for you while you're at checkout, and one that
-        keeps the shop owner logged in to the admin area. We don't use advertising or tracking cookies. If that changes,
+        This site uses only essential cookies: one that briefly holds a game for you while you're at checkout, one that keeps
+        you logged in if you have an account, and one that keeps the shop owner logged in to the admin area. We don't use advertising or tracking cookies. If that changes,
         for example if we start measuring ads, we'll update this policy first.
       </p>
 
       <h2 id="keep">How long we keep it</h2>
       <p>
-        Order records are kept for seven years, as New Zealand tax law requires. Other information is kept only as long as
-        it's needed, then deleted.
+        Order records are kept for seven years, as New Zealand tax law requires. Account details are kept while your account
+        is open; ask us to close it and we'll delete them, except anything tied to a sale we must keep for tax. Other
+        information is kept only as long as it's needed, then deleted.
       </p>
 
       <h2 id="secure">Keeping it safe</h2>

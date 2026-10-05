@@ -5,7 +5,7 @@ import { Gallery } from "./Gallery";
 import { JsonLd } from "@/components/JsonLd";
 import { StatusPrice, CompleteLine, productAlt, ProductCard } from "@/components/ProductCard";
 import { CollectorCard } from "@/components/CollectorCard";
-import { rarityOf } from "@/lib/collector";
+import { viewFromProduct } from "@/lib/card-view";
 import { getPublicProduct, listPublicProducts, publicStatus } from "@/lib/products";
 import { formatNzd } from "@/lib/format";
 import { offerShipping, returnPolicy } from "@/lib/schema";
@@ -128,8 +128,21 @@ export default async function ProductPage({ params, searchParams }: Props) {
           image: p.images,
           url: `${site.url}/shop/${p.slug}`,
           category: ["Toys & Games > Games > Board Games", categoryLabel(p.category)].join(" > "),
-          sku: `BG-${p.id}`,
-          productID: `BG-${p.id}`,
+          sku: p.card_no || `BG-${p.id}`,
+          productID: p.card_no || `BG-${p.id}`,
+          additionalProperty: (() => {
+            const v = viewFromProduct(p);
+            return [
+              ["Players", v.players],
+              ["Playing time", v.minutes],
+              ["Ages", v.age],
+              ["Game type", v.kind],
+              ["Designer", v.designer],
+              ["Card rarity", v.rarity],
+            ]
+              .filter(([, value]) => value)
+              .map(([name, value]) => ({ "@type": "PropertyValue", name, value }));
+          })(),
           // The publisher is the brand of a board game; without one, the shop is named as the seller only.
           ...(p.publisher ? { brand: { "@type": "Brand", name: p.publisher } } : {}),
           ...(p.year ? { releaseDate: p.year } : {}),
@@ -208,9 +221,12 @@ export default async function ProductPage({ params, searchParams }: Props) {
 
           <section className="product-card-aside" aria-labelledby="its-card">
             <h2 id="its-card" className="details-head">
-              Collector card: {rarityOf(p)}
+              Card {p.card_no}
             </h2>
-            <CollectorCard product={p} />
+            <CollectorCard view={viewFromProduct(p)} />
+            <p className="hint">
+              <Link href={`/cards/${p.card_no}`}>See this card's full stats</Link>
+            </p>
           </section>
 
           <h2 className="details-head">Details</h2>
