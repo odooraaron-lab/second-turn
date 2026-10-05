@@ -13,6 +13,11 @@ const pickup = {
   town: "Whangārei",
   note: "Free. We'll email you to arrange a time.",
 };
+// Buying or trading in customers' old games. Off until you decide to offer it; when on, the home page FAQ says so.
+const tradeIns = {
+  enabled: false,
+  note: "Got old games to sell or swap? Email us a photo of the box and what's inside and we'll make an offer.",
+};
 const returns = {
   // 0 = no change-of-mind returns (faulty, damaged or not-as-described items are still put right).
   // Set to e.g. 14 to accept returns within 14 days of delivery; the page and Google data update to match.
@@ -25,23 +30,28 @@ const returns = {
 export const site = {
   // TODO: placeholder name. Change it here and the whole site, emails and Stripe follow.
   name: "Second Turn",
-  tagline: "Second-hand board games, counted and checked",
+  tagline: "Second-hand board games NZ, counted and checked",
   // Google title for the home page (keep under ~60 characters)
-  homeTitle: "Second Turn | Second-Hand & Vintage Board Games NZ",
+  homeTitle: "Second Hand Board Games NZ | Buy Now | Second Turn",
   // Google description for the home page (keep under ~155 characters)
   description:
-    "Second-hand and vintage board games, card games and jigsaws, counted piece by piece. One-off listings, couriered NZ-wide or picked up in Whangārei.",
+    "Buy second hand board games in New Zealand at fixed Buy Now prices. Vintage and family games, every piece counted, couriered NZ-wide or picked up in Whangārei.",
   keywords: [
     "second hand board games NZ",
+    "used board games New Zealand",
+    "buy board games online NZ",
     "vintage board games NZ",
-    "retro board games",
+    "retro board games NZ",
     "old board games for sale",
-    "used board games NZ",
+    "board games buy now",
+    "cheap board games NZ",
+    "board game trade NZ",
+    "Trade Me board games alternative",
     "80s board games",
     "classic family board games",
     "board game replacement pieces NZ",
-    "board game spare parts",
     "board games Whangārei",
+    "board games Northland",
   ],
   url: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
   locale: "en_NZ",
@@ -59,6 +69,7 @@ export const site = {
   shipping,
   pickup,
   returns,
+  tradeIns,
   // Days after shipping that opted-in buyers get a "how's game night going?" email with new games (needs CRON_SECRET).
   followUpDays: 21,
   dispatchNote: `Sent by tracked courier within ${shipping.handlingDays.max} working days, anywhere in New Zealand.`,
@@ -69,28 +80,28 @@ export const site = {
     {
       id: "board-games",
       label: "Board games",
-      title: "Second-hand board games for sale NZ",
+      title: "Second hand board games for sale NZ",
       intro:
-        "Classic and vintage board games, second-hand and checked piece by piece. Family favourites, strategy games and the ones you grew up with.",
+        "Second hand board games at fixed Buy Now prices, every piece counted. Classic family games, strategy games and the ones you grew up with, couriered anywhere in New Zealand.",
     },
     {
       id: "card-games",
       label: "Card and dice games",
-      title: "Card and dice games",
-      intro: "Second-hand card games, dice games and travel games. Decks counted, dice included, rules in the box.",
+      title: "Second hand card and dice games NZ",
+      intro: "Second hand card games, dice games and travel games, decks counted and dice included. Buy now and have it couriered NZ-wide.",
     },
     {
       id: "puzzles",
       label: "Jigsaws and puzzles",
-      title: "Second-hand jigsaw puzzles NZ",
-      intro: "Vintage and second-hand jigsaws and puzzle games, with piece counts noted where we've checked them.",
+      title: "Second hand jigsaw puzzles NZ",
+      intro: "Second hand and vintage jigsaw puzzles and puzzle games, with piece counts noted where they've been checked. Courier NZ-wide or pick up in Whangārei.",
     },
     {
       id: "parts",
       label: "Spare pieces and parts",
-      title: "Replacement board game pieces NZ",
+      title: "Replacement board game pieces and spare parts NZ",
       intro:
-        "Lost a piece? Spare tokens, cards, dice, boards and rules from classic games, so the set at home can be played again.",
+        "Lost a piece? Spare tokens, cards, dice, boards and rules from classic board games, so the set at home can be played again. Cheap courier anywhere in New Zealand.",
     },
   ],
 
@@ -102,35 +113,35 @@ export const site = {
       label: "1960s and earlier",
       short: "Pre-70s",
       title: "1950s and 1960s board games for sale NZ",
-      intro: "Board games from the 1960s and earlier: card boards, wooden pieces and box art from another age.",
+      intro: "Board games from the 1960s and earlier: card boards, wooden pieces and box art from another age. Second hand, counted, Buy Now prices, couriered NZ-wide.",
     },
     {
       id: "1970s",
       label: "1970s",
       short: "70s",
       title: "1970s board games for sale NZ",
-      intro: "1970s board games: bold box art, plastic everything, and the family games that filled the decade.",
+      intro: "1970s board games: bold box art, plastic everything, and the family games that filled the decade. Second hand, counted, Buy Now prices, couriered NZ-wide.",
     },
     {
       id: "1980s",
       label: "1980s",
       short: "80s",
       title: "1980s board games for sale NZ",
-      intro: "1980s board games: trivia nights, electronic gadgets and the classics that lived in every Kiwi cupboard.",
+      intro: "1980s board games: trivia nights, electronic gadgets and the classics that lived in every Kiwi cupboard. Second hand, counted, Buy Now prices, couriered NZ-wide.",
     },
     {
       id: "1990s",
       label: "1990s",
       short: "90s",
       title: "1990s board games for sale NZ",
-      intro: "1990s board games: VHS games, film tie-ins and the decade modern board games started.",
+      intro: "1990s board games: VHS games, film tie-ins and the decade modern board games started. Second hand, counted, Buy Now prices, couriered NZ-wide.",
     },
     {
       id: "2000s-on",
       label: "2000s on",
       short: "2000s+",
       title: "Modern classic board games, second-hand NZ",
-      intro: "Newer editions and modern classics, second-hand and checked, for families who just want a good game.",
+      intro: "Newer editions and modern classics, second-hand and checked, for families who just want a good game. Second hand, counted, Buy Now prices, couriered NZ-wide.",
     },
   ],
 

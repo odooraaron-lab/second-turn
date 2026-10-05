@@ -77,7 +77,7 @@ Turn pick-up off, or change the town, under `pickup` in `site.config.ts`.
 Each game can be given a decade in admin. Every decade and category has its own page Google can index, for example `/shop/era/1980s` and `/shop/category/parts`, linked from the menu, the home board, the footer and the blog. Edit the decades, their Google titles and intros in `site.config.ts`.
 
 ## Blog
-33 posts in five topics (classic games, collecting, care and repair, game night, buying in NZ), in `content/blog/`. Mark up to five with `featured: true` to list them under "Popular reads" in the footer. Posts link to each other and to shop pages, and posts with a decade or category show a few matching games at the end.
+36 posts in five topics (classic games, collecting, care and repair, game night, buying in NZ), in `content/blog/`. Mark up to five with `featured: true` to list them under "Popular reads" in the footer. Posts link to each other and to shop pages, and posts with a decade or category show a few matching games at the end.
 
 To add a post: copy an entry in the right file, give it a new slug and date, write the body, then run `python3 scripts/blog-images.py` to draw its cover. To use a real photo instead, save it over `public/blog/<slug>.jpg` (landscape, about 1200 × 675).
 
@@ -85,6 +85,15 @@ To add a post: copy an entry in the right file, give it a new slug and date, wri
 - **Order confirmation** to the buyer (courier or pick-up wording), with a few more games from the same decade, and a sale alert to you.
 - **Shipped** email with tracking when you mark a courier order shipped. Pick-ups are just marked collected.
 - **Follow-up** about 21 days later, only to buyers who ticked "Email me when new games are listed?" at checkout, with one-click unsubscribe. Set `CRON_SECRET` to switch it on; it runs daily via `vercel.json`. Change the delay with `followUpDays`.
+
+## Getting found on Google
+Built in: page titles and descriptions aimed at searches like "second hand board games NZ", "buy board games online NZ" and "80s board games", product data for Google (price, Buy Now availability, condition, NZ delivery and returns), an FAQ on the home page that Google can show as answers, breadcrumbs, a sitemap at `/sitemap.xml`, and 36 blog posts that link into the shop.
+
+Two free things worth doing once the site is live:
+1. **Google Search Console** (search.google.com/search-console): add the site, then submit `https://YOUR-SITE/sitemap.xml`. This gets new games indexed faster and shows which searches find you.
+2. **Google Merchant Center** (merchants.google.com): free product listings in Google Shopping. Add a product source by scheduled fetch from `https://YOUR-SITE/feeds/google.xml`, set to daily. The same feed works for Facebook and Instagram catalogues. Only games that can be bought right now are in it.
+
+Trade-ins: `tradeIns` in `site.config.ts` is off. Turn it on and write your own note if you start buying or swapping games, and the home page FAQ will say so.
 
 ## Editing content
 - Name, tagline, Google titles, keywords, categories, decades, conditions, price filters, courier price, pick-up, returns, About text: `site.config.ts`

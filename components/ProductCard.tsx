@@ -9,7 +9,7 @@ export const productMeta = (p: Pick<Product, "publisher" | "year" | "players">) 
 
 /** Alt text that says what the photo shows, for screen readers and Google Images */
 export const productAlt = (p: Pick<Product, "title" | "publisher" | "year">) =>
-  [`${p.title} board game`, [p.publisher, p.year].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  [`${p.title} second hand board game`, [p.publisher, p.year].filter(Boolean).join(" ")].filter(Boolean).join(", ");
 
 /** Every game shows its price; sold and held games say so alongside it. */
 export function StatusPrice({ product }: { product: Product }) {

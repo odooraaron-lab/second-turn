@@ -46,6 +46,15 @@ export function Footer() {
             </nav>
           )}
 
+          <nav aria-label="Popular searches" className="footer-col">
+            <h2>Popular searches</h2>
+            <Link href="/shop/category/board-games">Second hand board games NZ</Link>
+            <Link href="/shop/era/1980s">80s board games</Link>
+            <Link href="/shop/era/1970s">70s board games</Link>
+            <Link href="/shop?price=under-20">Cheap board games under $20</Link>
+            <Link href="/shop/category/parts">Replacement game pieces</Link>
+          </nav>
+
           <nav aria-label="About the shop" className="footer-col">
             <h2>Info</h2>
             <Link href="/about">About</Link>

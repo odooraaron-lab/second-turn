@@ -2,6 +2,150 @@ import type { Post } from "../types";
 
 export const buyingInNzPosts: Post[] = [
   {
+    slug: "buying-board-games-trade-me-vs-specialist",
+    category: "buying-in-nz",
+    title: "Trade Me or a specialist shop? Buying second hand board games in NZ",
+    seoTitle: "Board Games on Trade Me vs a Specialist Shop",
+    description:
+      "The pros and cons of buying second hand board games on Trade Me, at op shops and from a specialist seller in NZ: price, completeness, Buy Now versus auctions, and delivery.",
+    date: "2026-10-04",
+    keywords: ["Trade Me board games", "second hand board games NZ", "buy board games online NZ", "board games buy now", "used board games New Zealand", "Trade Me alternative"],
+    shop: { label: "Browse games with Buy Now prices", href: "/shop" },
+    body: `
+If you're after a second hand board game in New Zealand, chances are you'll look on Trade Me first. It's where most Kiwis buy and sell used things, and there are always plenty of games listed. A specialist seller works differently. Neither is always better, so here's an honest look at both.
+
+## Buying on Trade Me
+
+Trade Me has the biggest range of used board games in the country, from single games to big job lots of a family's whole collection.
+
+**What's good:**
+- **Range.** Rare and unusual games turn up there more than anywhere else.
+- **Bargains.** Auctions with no reserve can end cheaply, especially for common games.
+- **Local pick-up.** Many sellers let you collect, which saves on courier costs.
+
+**What to watch for:**
+- **Completeness varies.** Plenty of listings say "should be complete" or "haven't checked". Some sellers count everything; many don't.
+- **Auctions take time.** You might wait days for a listing to close, and lose it in the last minute.
+- **Photos vary.** A single photo of the lid doesn't tell you what's inside.
+- **Courier costs add up** on cheap games, and every seller packs differently.
+
+Our guide to [reading second-hand board game listings](/blog/reading-second-hand-board-game-listings) lists the questions worth asking a seller before you bid.
+
+## Buying from a specialist shop
+
+A specialist second hand game seller, like us, does the checking before the game is listed.
+
+**What's good:**
+- **Counted and labelled.** Every game here is labelled Counted complete, Missing pieces or Not counted, so you know exactly what you're getting.
+- **Buy Now prices.** No auctions, no waiting for a listing to close. If it's there, you can buy it straight away.
+- **Photos of the contents,** not just the box, including close-ups of any wear.
+- **Consistent packing.** Pieces bagged, gaps filled, tracked courier.
+
+**What to watch for:**
+- **Prices can be a little higher** than a lucky auction win, because the counting and cleaning have been done for you.
+- **Smaller range** than a whole marketplace.
+
+## Op shops and fairs
+
+Op shops and school fairs are still the cheapest way to find games, but boxes are often taped shut and nobody has counted the pieces. Our [op shop checklist](/blog/op-shop-board-game-checklist) helps.
+
+## Which should you use?
+
+- **Hunting something rare?** Trade Me's range is hard to beat.
+- **Want a complete game for a birthday or game night this weekend?** A specialist with Buy Now prices and counted games saves the guesswork.
+- **On a tight budget and happy to do the counting yourself?** Op shops and fairs.
+
+We're not connected to Trade Me. We just think a counted, ready-to-play game deserves a home of its own. Browse [every game for sale](/shop), or see [where to find second hand board games in NZ](/blog/where-to-buy-second-hand-board-games-nz) for more places to look.
+`,
+  },
+  {
+    slug: "board-game-swaps-and-trading-nz",
+    category: "buying-in-nz",
+    title: "Trading and swapping board games in New Zealand",
+    seoTitle: "Trading and Swapping Board Games in NZ",
+    description:
+      "How to trade and swap second hand board games in NZ: swap groups and meet-ups, how to value a game for a trade, posting games safely, and avoiding bad swaps.",
+    date: "2026-09-29",
+    keywords: ["board game trade NZ", "swap board games", "board game swap New Zealand", "trading used board games", "board game exchange"],
+    shop: { label: "Browse second hand board games", href: "/shop/category/board-games" },
+    body: `
+Swapping games is one of the best things about the board game hobby. A game you've played to death becomes someone else's new favourite, and theirs comes home with you. Here's how to trade board games in New Zealand without ending up with a box of missing pieces.
+
+## Where people trade games
+
+- **Board game groups and clubs.** Many towns have regular game nights at cafés, libraries or community halls, and swapping happens naturally there.
+- **Online groups.** Local buy, sell and swap groups for board games are a common way to find trades near you.
+- **Swap meets and bring-and-swap tables** at games days and conventions.
+- **Friends and family.** The simplest trade of all: a shelf swap for a few months.
+
+Serious hobby gamers also run "math trades", where lots of people list games and a computer works out a chain of trades so everyone gets something they wanted.
+
+## Valuing a game for a trade
+
+A fair trade is about what each game is actually worth, not what it cost new.
+
+- **Completeness first.** A counted complete game is worth more than one that might be short. Count both games before agreeing, using our guide to [checking a game is complete](/blog/how-to-check-a-board-game-is-complete).
+- **Condition next.** Box wear, sun fading and pen marks all matter.
+- **Edition.** An early printing and a modern reprint aren't the same game to a collector. See [how to date a board game](/blog/how-to-date-a-board-game).
+- **What it sells for.** Check what similar games have actually sold for, not just asking prices. [Are old board games worth anything?](/blog/are-old-board-games-worth-anything) explains what pushes a value up.
+
+## Swapping safely
+
+- **Agree on details in writing:** edition, completeness and condition.
+- **Swap in person** where you can, and open the boxes together.
+- **Posting?** Agree who sends first, use tracked courier, and pack carefully as in [how board games are packed and couriered](/blog/how-board-games-are-couriered-nz).
+- **Be honest about your own game.** The trading community is smaller than it looks, and reputation travels.
+
+## When buying beats trading
+
+Sometimes it's easier to sell a game and buy the one you want. If you'd rather skip the back-and-forth, every game here has a fixed Buy Now price and an honest completeness label. Browse [board games](/shop/category/board-games), or read [selling your old board games](/blog/selling-your-old-board-games-nz) to turn your shelf into credit for the next one.
+`,
+  },
+  {
+    slug: "cheap-board-games-nz",
+    category: "buying-in-nz",
+    title: "Cheap board games in NZ: great games without spending much",
+    seoTitle: "Cheap Board Games NZ: Good Games for Less",
+    description:
+      "How to find cheap board games in New Zealand that are still worth playing: which classics are usually affordable second hand, where to look, and what to avoid.",
+    date: "2026-09-24",
+    keywords: ["cheap board games NZ", "board games under $20", "budget board games", "affordable board games New Zealand", "cheap second hand games"],
+    shop: { label: "Games under $20", href: "/shop?price=under-20" },
+    body: `
+New board games can be expensive, but you don't need to spend much to have a great game night. Second hand classics are some of the best value games around, and many of them are still brilliant to play.
+
+## Classics that are usually affordable second hand
+
+Games that sold in huge numbers turn up second hand all the time, so they're rarely expensive:
+
+- **Card and dice games** like Uno, Yahtzee and decks for Last Card or 500. Small, cheap to post, and endlessly replayable.
+- **Connect 4, Guess Who? and Othello.** Simple, quick and great with kids.
+- **Snakes and ladders and Ludo,** often in compendium sets with other games included.
+- **Common editions of Monopoly, Cluedo and Scrabble.** Because they were printed in such numbers, ordinary editions are rarely costly. Collectors' editions are another matter.
+- **Jigsaw puzzles,** especially if you're happy with "not counted".
+
+## Where cheap games come from
+
+- **Op shops and school fairs** are the cheapest, though you'll need to check the contents yourself. See our [op shop checklist](/blog/op-shop-board-game-checklist).
+- **Job lots** on listing sites can work out cheap per game if you want several.
+- **Our under $20 section** has counted, cleaned games with fixed Buy Now prices: [games under $20](/shop?price=under-20).
+
+## Cheap but not a bargain
+
+A cheap game that's missing pieces isn't good value. Before you buy, check:
+
+- **Is it complete?** Or at least, is anything missing that stops the game working? See [how to check a game is complete](/blog/how-to-check-a-board-game-is-complete).
+- **Courier cost.** On a $5 game, a $12 courier can triple the price. Pick-up or buying a few games at once helps.
+- **Smell and damp.** Musty games take work to rescue, as in [getting a musty smell out of old games](/blog/musty-smell-old-board-games).
+
+## Make an incomplete game work
+
+Some of the best bargains are games missing something easy to replace: dice, a timer, a score pad. A cheap incomplete game plus a spare part is often cheaper than a complete one. See [replacing missing pieces](/blog/replacing-missing-board-game-pieces) and our [spare parts](/shop/category/parts).
+
+Ready to shop? Start with [games under $20](/shop?price=under-20), or browse [every game for sale](/shop).
+`,
+  },
+  {
     slug: "reading-second-hand-board-game-listings",
     category: "buying-in-nz",
     title: "Counted complete, missing pieces, not counted: reading second-hand game listings",

@@ -8,6 +8,8 @@ import { sortedPosts } from "@/content/posts";
 import { formatDate } from "@/lib/format";
 import { PostCover } from "@/components/PostCover";
 import { site } from "@/site.config";
+import { JsonLd } from "@/components/JsonLd";
+import { faqs, faqSchema } from "@/content/faq";
 
 export const dynamic = "force-dynamic";
 
@@ -139,6 +141,24 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="wrap section seo-intro" aria-labelledby="buy-nz">
+        <h2 id="buy-nz">Second hand board games, New Zealand wide</h2>
+        <div className="prose">
+          <p>
+            {site.name} is an online shop for second hand board games in NZ: the family classics, vintage games from the
+            70s, 80s and 90s, card and dice games, jigsaws and <Link href="/shop/category/parts">replacement pieces</Link>.
+            Every game is a one-off with a fixed <strong>Buy Now</strong> price, so there are no auctions to watch. Pay by card,
+            and it's couriered anywhere in New Zealand{site.pickup.enabled ? `, or picked up free in ${site.pickup.town}` : ""}.
+          </p>
+          <p>
+            Buying used board games online usually means guessing what's in the box. Here every game is counted against its
+            rules and labelled, with photos of the contents and any wear. Browse <Link href="/shop/era/1980s">80s board games</Link>,{" "}
+            <Link href="/shop/era/1970s">70s games</Link>, <Link href="/shop/category/board-games">all board games</Link> or{" "}
+            <Link href="/shop?price=under-20">games under $20</Link>.
+          </p>
+        </div>
+      </section>
+
       <section className="wrap section" aria-labelledby="decades">
         <div className="section-head">
           <h2 id="decades">Browse by decade</h2>
@@ -159,6 +179,22 @@ export default async function Home() {
             </Link>
           ))}
         </RevealGrid>
+      </section>
+
+      <section className="wrap section faq" aria-labelledby="faq">
+        <JsonLd data={faqSchema()} />
+        <h2 id="faq">Questions people ask</h2>
+        <div className="faq-list">
+          {faqs().map((f) => (
+            <details key={f.q}>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+              <Link href={f.link.href} className="text-link">
+                {f.link.label}
+              </Link>
+            </details>
+          ))}
+        </div>
       </section>
     </>
   );

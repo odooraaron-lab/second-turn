@@ -28,9 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Lead with the game, finish with what makes someone click: complete, NZ, price.
   const clip = (t: string, n: number) => (t.length <= n ? t : `${t.slice(0, t.lastIndexOf(" ", n))}…`);
   const facts = [
-    "Second-hand",
-    complete?.id === "complete" ? "counted complete" : complete?.id === "missing" ? "some pieces missing" : "",
-    p.status === "sold" ? "" : formatNzd(p.price_cents),
+    p.status === "sold" ? "Sold" : `Buy now ${formatNzd(p.price_cents)}`,
+    complete?.id === "complete" ? "counted complete" : complete?.id === "missing" ? "some pieces missing" : "second hand",
   ]
     .filter(Boolean)
     .join(", ");
@@ -39,7 +38,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .replace(/\s+/g, " ")
     .trim();
   const description = `${clip(lead, 152 - tail.length)} ${tail}`;
-  const title = `${p.title}${p.year ? ` (${p.year})` : ""}${p.category === "parts" ? "" : ", second-hand"}`;
+  // e.g. "Cluedo (1972) Board Game, Second Hand NZ" or "Monopoly houses, spare part NZ"
+  const kind = p.category === "parts" ? ", spare part NZ" : /game|puzzle|jigsaw/i.test(p.title) ? ", Second Hand NZ" : " Board Game, Second Hand NZ";
+  const title = `${p.title}${p.year ? ` (${p.year})` : ""}${kind}`;
   return {
     title,
     description,

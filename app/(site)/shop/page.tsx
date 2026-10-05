@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic";
 type Props = { searchParams: Promise<{ c?: string; price?: string }> };
 
 export const metadata: Metadata = {
-  title: "Shop second-hand board games",
-  description: `Second-hand and vintage board games, card games, jigsaws and spare parts, counted and checked. Browse by decade or price. Couriered NZ-wide.`,
+  title: "Buy Second Hand Board Games Online NZ",
+  description: `Second hand and vintage board games, card games, jigsaws and spare parts at fixed Buy Now prices. Every piece counted. Courier NZ-wide or pick up in Whangārei.`,
   alternates: { canonical: "/shop" },
 };
 
@@ -25,7 +25,11 @@ export default async function Shop({ searchParams }: Props) {
   return (
     <CollectionView
       title={band ? `Games ${band.label.charAt(0).toLowerCase()}${band.label.slice(1)}` : "Every game for sale"}
-      intro={band ? "Prices are in NZ dollars, before courier." : undefined}
+      intro={
+        band
+          ? "Prices are in NZ dollars, before courier."
+          : "Second hand board games, card games, jigsaws and spare parts, every one counted and photographed. Fixed Buy Now prices, tracked courier anywhere in New Zealand."
+      }
       path="/shop"
       crumbs={[
         ["Home", "/"],
